@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import socketIOClient from 'socket.io-client';
-const ENDPOINT = 'http://localhost:3000/'; // Change this
+const ENDPOINT = 'http://localhost:3000/'; // !!! Change this
 
 function App() {
   const [response, setResponse] = useState('');
