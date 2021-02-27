@@ -15,13 +15,15 @@ io.on('connection', (socket) => {
   const { id } = socket.client;
   console.log(`${id} connected`);
 
+  io.emit('connection', id);
+
   socket.on('disconnect', () => {
     console.log(`${id} disconnected`);
   });
 
-  socket.on('chat message', (msg) => {
-    console.log(`Message: ${msg}`);
-    io.emit('chat message', msg);
+  socket.on('chat message', (message) => {
+    console.log(`Message: ${message}`);
+    io.emit('chat message', message);
   });
 });
 
