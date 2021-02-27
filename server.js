@@ -22,8 +22,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat message', (message) => {
-    console.log(`Message: ${message}`);
-    io.emit('chat message', message);
+    console.log(`Message: ${message}, ID: ${socket.client.id}`);
+    const id = socket.client.id;
+    io.emit('chat message', message, id);
   });
 });
 

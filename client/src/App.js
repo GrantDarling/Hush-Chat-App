@@ -7,17 +7,16 @@ const socket = io.connect('http://localhost:5000');
 
 let App = () => {
   const [message, setMessage] = useState({
-    id: '',
     text: ''
   });
 
   useEffect(() => {
-    socket.on('chat message', function (msg) {
+    socket.on('chat message', function (msg, id) {
       const texts = document.getElementById('texts');
       const item = document.createElement('p');
 
       console.log(msg);
-      item.textContent = `${msg} and ${message.id}`; //User ${id}:
+      item.textContent = `${msg} and ${id}`; //User ${id}:
       texts.appendChild(item);
     });
 
@@ -26,10 +25,10 @@ let App = () => {
     });
   }, []);
 
-  const onChange = (e) => setMessage({ message: e.target.value });
+  const onChange = (e) => setMessage({ text: e.target.value });
 
   const onSubmit = () => {
-    socket.emit('chat message', message.message);
+    socket.emit('chat message', message.text);
 
     setMessage({ text: '' });
   };
