@@ -33,6 +33,9 @@ let App = () => {
       if (counter === 'room2') {
         room = 'room1';
       }
+
+      setMessage({ sender: id });
+      playVideoFromCamera();
     });
 
     // Video recording
@@ -75,6 +78,7 @@ let App = () => {
       <div id='texts'>
         <input onChange={(e) => onChange(e)} value={message.text} />
         <button onClick={onSubmit}>Send</button>
+        <h1>User {message.sender}</h1>
         <video id='localVideo' autoPlay playsInline controls={false} />
       </div>
     </div>
