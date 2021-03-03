@@ -13,9 +13,14 @@ const io = require('socket.io')(server, {
 
 io.on('connection', (socket) => {
   const { id } = socket.client;
-  console.log(`${id} connected`);
 
   io.emit('connection', id);
+
+  // Create room
+  socket.on('create', function (room) {
+    socket.join(room);
+    console.log(`${id} connected to ${room}`);
+  });
 
   socket.on('disconnect', () => {
     console.log(`${id} disconnected`);
@@ -26,6 +31,10 @@ io.on('connection', (socket) => {
     const id = socket.client.id;
     io.emit('chat message', message, id);
   });
+});
+
+app.get('/', (res, req) => {
+  req.send('Hush Chat/Video App Server');
 });
 
 const PORT = process.env.PORT || 5000;
