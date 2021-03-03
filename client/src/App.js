@@ -38,7 +38,7 @@ let App = () => {
       playVideoFromCamera();
     });
 
-    // Video recording
+    // Video recording test
     const openMediaDevices = async (constraints) => {
       return await navigator.mediaDevices.getUserMedia(constraints);
     };
