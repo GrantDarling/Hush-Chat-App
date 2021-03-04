@@ -1,1 +1,13 @@
+/*************
+   APP SCSS
+*************/
+
+/* VENDORS */
+@import 'styles/Vendors/bourbon/bourbon';
+
+/* ABSTRACT */
+@import 'styles/abstract/variables';
+@import 'styles/abstract/fonts';
+
+/* LAYOUT */
 @import 'styles/layout/navbar';

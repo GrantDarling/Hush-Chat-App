@@ -1,3 +1,26 @@
 /*************
     Navbar
 *************/
+
+.navbar {
+  @include padding(30px null null 30px);
+
+  &__logo {
+    height: 150px;
+    width: auto;
+    transform: scaleX(-1);
+  }
+
+  &__items {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 700;
+  }
+
+  &__tagline {
+    font-family: 'Source Code Pro', monospace;
+  }
+
+  .active {
+    color: $black;
+  }
+}

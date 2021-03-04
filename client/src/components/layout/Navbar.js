@@ -1,25 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Logo from '../../images/hush_logo.png';
 
 let Navbar = () => {
   console.log(Logo);
   return (
-    <nav>
+    <nav className='navbar'>
       <div className='navbar__logo-container'>
-        <Link to='/'>
+        <NavLink exact to='/'>
           <img className='navbar__logo' src={Logo} alt='Logo' />;
-        </Link>
+        </NavLink>
       </div>
       <div className='navbar__items-container'>
         <div className='navbar__items'>
-          <Link to='/'>HOME</Link>
+          <NavLink exact to='/'>
+            HOME
+          </NavLink>
           <span> | </span>
-          <Link to='/lobby'>LOBBY</Link>
+          <NavLink exact to='/lobby'>
+            LOBBY
+          </NavLink>
           <span> | </span>
-          <Link to='/room'>NEW ROOM</Link>
+          <NavLink exact to='/room'>
+            NEW ROOM
+          </NavLink>
         </div>
-        <div className='navbar__items'>
+        <div className='navbar__tagline'>
           the only chat app that doesn't care enough to track you.
         </div>
       </div>
