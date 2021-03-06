@@ -6,8 +6,12 @@
 @import 'styles/Vendors/bourbon/bourbon';
 
 /* ABSTRACT */
-@import 'styles/abstract/variables';
-@import 'styles/abstract/fonts';
+@import 'styles/Abstract/variables';
+@import 'styles/Abstract/mixins';
+@import 'styles/Abstract/fonts';
+
+/* BASE */
+@import 'styles/Base/base';
 
 /* LAYOUT */
-@import 'styles/layout/navbar';
+@import 'styles/Layout/navbar';

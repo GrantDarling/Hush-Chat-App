@@ -1,0 +1,9 @@
+/*************
+    Mixins
+*************/
+
+@mixin flex-position($horizontal: center, $vertical: center) {
+  display: flex;
+  justify-content: $vertical;
+  align-items: $horizontal;
+}
