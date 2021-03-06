@@ -6,11 +6,9 @@ let Navbar = () => {
   console.log(Logo);
   return (
     <nav className='navbar'>
-      <div className='navbar__logo-container'>
-        <NavLink exact to='/'>
-          <img className='navbar__logo' src={Logo} alt='Logo' />;
-        </NavLink>
-      </div>
+      <NavLink exact to='/'>
+        <img className='navbar__logo' src={Logo} alt='Logo' />
+      </NavLink>
       <div className='navbar__items-container'>
         <div className='navbar__items'>
           <NavLink exact to='/'>

@@ -2,25 +2,53 @@
     Navbar
 *************/
 
+@mixin flex-position($horizontal: center, $vertical: center) {
+  display: flex;
+  justify-content: $vertical;
+  align-items: $horizontal;
+}
 .navbar {
+  @include flex-position(center, left);
   @include padding(30px null null 30px);
 
   &__logo {
-    height: 150px;
+    height: 100px;
     width: auto;
     transform: scaleX(-1);
+    padding-left: 20px;
   }
 
   &__items {
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    font-family: $primary-font;
+    font-weight: 500;
+    font-size: 24px;
+
+    span {
+      font-weight: 100;
+      font-size: 14px;
+      align-self: center;
+      color: $HUSH-GREY;
+    }
+
+    a {
+      text-decoration: none;
+      color: $HUSH-GREY;
+
+      &:hover {
+        color: $HUSH_ORANGE;
+      }
+    }
   }
 
   &__tagline {
-    font-family: 'Source Code Pro', monospace;
+    font-family: $secondary-font;
+    font-size: 10px;
+    margin-top: 10px;
   }
 
   .active {
-    color: $black;
+    color: $grey-mine;
   }
 }
