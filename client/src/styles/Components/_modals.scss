@@ -1,0 +1,23 @@
+
+/*************
+    Modals
+*************/
+
+
+.modal {
+    position: relative;
+    background: $white;
+    height: 400px;
+    width: 400px;
+
+    &-backdrop {
+        @include position(absolute, 0 0 0 0);
+        @include flex-position();
+        background: #1f1f1f66;
+    }
+
+    &-button {
+        @include position(absolute, -10px -15px null null);
+        cursor: pointer;
+    }
+}
