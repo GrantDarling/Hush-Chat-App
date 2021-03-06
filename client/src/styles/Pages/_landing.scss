@@ -1,0 +1,26 @@
+.landing__buttons {
+  @include flex-position(null, space-around);
+  width: 400px;
+
+  .landing__button {
+    background: none;
+    border: none;
+    box-shadow: 1px 2px 4px $HUSH_GREY;
+    font-size: 24px;
+    padding: 10px;
+
+    &:hover {
+      box-shadow: 1px 2px 4px $HUSH_ORANGE;
+
+      a {
+        color: $HUSH_ORANGE;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: $HUSH_GREY;
+      font-family: $primary-font;
+    }
+  }
+}

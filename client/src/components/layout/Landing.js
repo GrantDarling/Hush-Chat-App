@@ -6,10 +6,10 @@ const Landing = () => {
     <section className='landing'>
       <div className='landing__buttons'>
         <button className='landing__button landing__button--create'>
-          <Link to='/room'>Create Room</Link>
+          <Link to='/room'>CREATE ROOM</Link>
         </button>
         <button className='landing__button landing__button--join'>
-          <Link to='/lobby'>Join Room</Link>
+          <Link to='/lobby'>JOIN ROOM</Link>
         </button>
       </div>
     </section>
