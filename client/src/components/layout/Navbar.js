@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import Logo from '../../images/hush_logo.png';
 
 let Navbar = () => {
-  console.log(Logo);
   return (
     <nav className='navbar'>
       <NavLink exact to='/'>
