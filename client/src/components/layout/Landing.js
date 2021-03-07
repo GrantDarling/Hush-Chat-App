@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Toggle from '../logical/Toggle';
 import Modal from '../layout/Modal';
 import CreateRoom from '../layout/CreateRoom';
@@ -11,10 +11,10 @@ const Landing = () => {
     <section className='landing'>
       <div className='landing__buttons'>
         <button className='landing__button landing__button--create'>
-          <Link to='/room'>CREATE ROOM</Link>
+          <NavLink to='/room'>CREATE ROOM</NavLink>
         </button>
         <button onClick={toggle} className='landing__button landing__button--join'>
-          <a href='#'>JOIN ROOM</a>
+          <NavLink to='room'>JOIN ROOM</NavLink>
         </button>
       </div>
 

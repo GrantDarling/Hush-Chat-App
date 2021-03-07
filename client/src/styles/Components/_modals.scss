@@ -3,12 +3,16 @@
     Modals
 *************/
 
-
 .modal {
     position: relative;
-    background: $white;
+    background: #f9f9f9;
     height: 400px;
     width: 400px;
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 3px #524f4f;
+    box-shadow: 1px 2px 4px $HUSH_GREY;
+    font-family: $primary-font;
 
     &-backdrop {
         @include position(absolute, 0 0 0 0);
@@ -17,7 +21,60 @@
     }
 
     &-button {
-        @include position(absolute, -10px -15px null null);
         cursor: pointer;
+        @include position(absolute, -10px -10px null null);
+        height: 30px;
+        width: 30px;
+        background: $grey-mine;
+        color: $white;
+        border-radius: 3px;
     }
+
+    h1 {
+        font-weight: 500;
+        font-size: 24px;
+    }
+}
+
+.create-room {
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    form {
+        width: 100%;
+
+        label,
+        input {
+            display: block;
+            width: 95%;
+            font-size: 16px;
+        }
+
+        input {
+            margin: 0 0 20px 0;
+            height: 30px;
+        }
+
+        label {
+            margin: 0 0 10px 0;
+        }
+
+        button {
+            width: 97%;      
+            height: 30px;  
+            font-size: 16px;
+            background: none;
+            border: none;
+            box-shadow: 1px 2px 4px $HUSH_GREY;
+
+            &:hover {
+                background: $grey-mine;
+                color: $white;
+            }
+        }
+    }
+
 }

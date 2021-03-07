@@ -23,9 +23,9 @@ const Navbar = () => {
             LOBBY
           </NavLink>
           <span> | </span>
-          <a href='#' onClick={toggle}>
+          <NavLink to='room' onClick={toggle}>
             NEW ROOM
-          </a>
+          </NavLink>
         </div>
         <div className='navbar__tagline'>
           the only chat app that doesn't care enough to track you.

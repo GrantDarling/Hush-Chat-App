@@ -1,0 +1,48 @@
+
+/*************
+    Room
+*************/
+
+.room {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    max-height: 500px;
+    max-width: 800px;
+    height: 100%;
+    width: 100%;
+    margin: 0 50px;
+    border: solid 1px coral;
+}
+
+.chatbox {
+    border: solid 1px gold;
+    width: 70%;
+
+    &__text-view {
+        height: 90%;
+    }
+
+    &__input {
+        margin-top: auto;
+
+        input {
+            box-sizing: border-box;
+            width: 80%;
+            height: 35px;
+        }
+        button {
+            box-sizing: border-box;
+            width: 20%;
+            border: none;
+            background: $black;
+            color: $white;
+            height: 35px;
+        }
+    }
+}
+
+.videos {
+    border: solid 1px fuchsia;
+    width: 30%;
+}
