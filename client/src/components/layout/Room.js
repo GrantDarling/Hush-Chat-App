@@ -1,7 +1,4 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import Toggle from '../logical/Toggle';
-import Modal from '../layout/Modal';
 
 const Room = () => {
 

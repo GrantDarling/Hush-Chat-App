@@ -23,7 +23,7 @@ const Navbar = () => {
             LOBBY
           </NavLink>
           <span> | </span>
-          <NavLink to='room' onClick={toggle}>
+          <NavLink to='/' onClick={toggle}>
             NEW ROOM
           </NavLink>
         </div>

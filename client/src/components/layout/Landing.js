@@ -10,16 +10,16 @@ const Landing = () => {
   return (
     <section className='landing'>
       <div className='landing__buttons'>
-        <button className='landing__button landing__button--create'>
-          <NavLink to='/room'>CREATE ROOM</NavLink>
+        <button onClick={toggle} className='landing__button landing__button--create'>
+          <NavLink to='/'>CREATE ROOM</NavLink>
         </button>
-        <button onClick={toggle} className='landing__button landing__button--join'>
-          <NavLink to='room'>JOIN ROOM</NavLink>
+        <button className='landing__button landing__button--join'>
+          <NavLink to='/room'>JOIN ROOM</NavLink>
         </button>
       </div>
 
       {isOpen ? (
-      <Modal closeModal={toggle}><CreateRoom /></Modal>
+      <Modal closeModal={toggle}><CreateRoom closeModal={toggle.bind(this)} /></Modal>
       ) : null}
     </section>
   );
