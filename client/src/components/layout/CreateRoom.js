@@ -20,9 +20,7 @@ const CreateRoom = ({ closeModal }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     closeModal();
-    
-    
-    alert(username + ' ' + room);
+    // CreateRoom() 
   };
 
   return (

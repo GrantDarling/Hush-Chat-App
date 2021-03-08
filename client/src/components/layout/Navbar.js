@@ -23,7 +23,7 @@ const Navbar = () => {
             LOBBY
           </NavLink>
           <span> | </span>
-          <NavLink to='/' onClick={toggle}>
+          <NavLink to='/room' onClick={toggle}>
             NEW ROOM
           </NavLink>
         </div>
@@ -33,7 +33,7 @@ const Navbar = () => {
       </div>
 
       {isOpen ? (
-        <Modal closeModal={toggle}><CreateRoom /></Modal>
+        <Modal closeModal={toggle}><CreateRoom closeModal={toggle.bind(this)} /></Modal>
       ) : null}
     </nav>
   );
