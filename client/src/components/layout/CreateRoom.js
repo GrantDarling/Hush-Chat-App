@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import io from 'socket.io-client';
 const socket = io.connect('http://localhost:5000');
 
@@ -17,14 +17,14 @@ const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
     closeModal();
-    createRoom() 
+    createRoom();
   };
 
   const createRoom = () => {
     socket.emit('create', room);
-    console.log('ROOM: ' + room);
+
+    console.log(`${room} was created.`);
   }
 
   return (

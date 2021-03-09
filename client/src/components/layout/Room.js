@@ -28,42 +28,54 @@ const Room = () => {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        // Send chat message
         socket.emit('chat message', message);
 
+        socket.on('message', function(data) {
+            console.log('Incoming message:', data);
+        });
 
         setRoomData({
             ...roomData,
             message: ''
         });
-
     }
 
 
     useEffect(() => {
-        toggle()
-
-        socket.on('chat message', function (message, id) {
-            const chatbox = document.querySelector('#chatbox__text-view');
-            const textMessage = document.createElement("li");
-            textMessage.appendChild(document.createTextNode(id + ' Says: ' + message));
-            chatbox.appendChild(textMessage);
-
-            console.log('sent!');
-            console.log(message);
-            // Create room
-        });
-
+        //toggle()
+        let x = Math.random();
+        let room;
+        if(x > 0.5) {
+            room = 'x'; //(Math.random());
+        } else {
+            room = 'y'; //(Math.random());
+        }
 
         socket.on('connection', (id) => {
-            console.log('ID: ' + id);
-            console.log(socket.rooms); // the Set contains at least the socket ID
+            socket.on('chat message', function (message, id) {
+                const chatbox = document.querySelector('#chatbox__text-view');
+                const textMessage = document.createElement("li");
+                textMessage.appendChild(document.createTextNode(id + ' Says: ' + message));
+                chatbox.appendChild(textMessage);
+                console.log(`${id}: ${message}`);
+            });
+
+            socket.emit('create', room);
         });
+
+        socket.emit('create', room);
+
+        console.log(`${room} was created.`);
+
     }, []);
 
+    socket.on('message', function(data) {
+   console.log('Incoming message:', data);
+});
+
   return (
-    <section className='room'>
-        <h1>Username: {username} | Room: {room}</h1>
+    <section className='room-container'>
+        <h1>Name: {username} <br /> Room: {room}</h1>
         <div className='room-container'>
             <div className='chatbox'>
                 <div className='chatbox__text-view'>

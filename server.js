@@ -15,13 +15,24 @@ const io = require('socket.io')(server, {
 
 io.on('connection', (socket) => {
   const { id } = socket.client;
+  console.log(`All Rooms: ${socket.rooms}`);
+
 
   io.emit('connection', id);
 
   // Create room
   socket.on('create', function (room) {
-    socket.join(room);
-    //console.log(`${id} connected to ${room}`);
+    socket.join(room.toString());
+
+    io.to("x").emit('chat message', "In Chatroom X!", id);
+    io.to("y").emit('chat message', "In Chatroom Y!", id);
+
+    console.log(`${id} connected to ${room}`);
+    socket.rooms.forEach(function(roomName){
+      console.log(`Lobby: ${roomName}`);
+    });
+
+    
 
     socket.rooms.forEach(function(roomName){
         //console.log('One room is: ' + roomName);
@@ -33,10 +44,14 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat message', (message) => {
-    console.log(`Message: ${message}, ID: ${socket.client.id}`);
-    io.emit('chat message', message, id);
+    //io.emit('chat message', message, id);
+    io.sockets.in("test").emit('chat message', message, id);
+
+
   });
 });
+
+
 
 // Express Routes 
 
