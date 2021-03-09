@@ -1,13 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Logo from '../../images/hush_logo.png';
-import Toggle from '../logical/Toggle';
-import Modal from '../layout/Modal';
-import CreateRoom from '../layout/CreateRoom';
 
 const Navbar = () => {
-  const [isOpen, toggle] = Toggle();
-
   return (
     <nav className='navbar'>
       <NavLink exact to='/'>
@@ -23,7 +18,7 @@ const Navbar = () => {
             LOBBY
           </NavLink>
           <span> | </span>
-          <NavLink to='/room' onClick={toggle}>
+          <NavLink to='/room'>
             NEW ROOM
           </NavLink>
         </div>
@@ -31,10 +26,6 @@ const Navbar = () => {
           the only chat app that doesn't care enough to track you.
         </div>
       </div>
-
-      {isOpen ? (
-        <Modal closeModal={toggle}><CreateRoom closeModal={toggle.bind(this)} /></Modal>
-      ) : null}
     </nav>
   );
 };

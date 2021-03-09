@@ -1,11 +1,6 @@
 import React, { useState }  from 'react';
 
-const CreateRoom = ({ closeModal }) => {
-
-    const [roomData, setRoomData] = useState({
-      username: '',
-      room: '',
-    });
+const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
 
   const { username, room } = roomData;
 
