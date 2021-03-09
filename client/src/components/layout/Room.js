@@ -3,6 +3,10 @@ import Toggle from '../logical/Toggle';
 import Modal from '../layout/Modal';
 import CreateRoom from '../layout/CreateRoom';
 
+import io from 'socket.io-client';
+const socket = io.connect('http://localhost:5000');
+
+
 const Room = () => {
     const [isOpen, toggle] = Toggle();
 
@@ -21,25 +25,40 @@ const Room = () => {
       });
     }
 
-
     const onSubmit = (e) => {
         e.preventDefault();
 
-        const chatbox = document.querySelector('#chatbox__text-view');
-        const textMessage = document.createElement("li");
-        textMessage.appendChild(document.createTextNode(message));
-        chatbox.appendChild(textMessage);
+        // Send chat message
+        socket.emit('chat message', message);
 
-    setRoomData({
-        ...roomData,
-        message: ''
-    });
+
+        setRoomData({
+            ...roomData,
+            message: ''
+        });
 
     }
 
 
     useEffect(() => {
-        //toggle()
+        toggle()
+
+        socket.on('chat message', function (message, id) {
+            const chatbox = document.querySelector('#chatbox__text-view');
+            const textMessage = document.createElement("li");
+            textMessage.appendChild(document.createTextNode(id + ' Says: ' + message));
+            chatbox.appendChild(textMessage);
+
+            console.log('sent!');
+            console.log(message);
+            // Create room
+        });
+
+
+        socket.on('connection', (id) => {
+            console.log('ID: ' + id);
+            console.log(socket.rooms); // the Set contains at least the socket ID
+        });
     }, []);
 
   return (
