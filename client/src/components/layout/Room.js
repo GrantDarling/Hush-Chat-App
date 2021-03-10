@@ -7,16 +7,18 @@ import io from 'socket.io-client';
 const socket = io.connect('http://localhost:5000');
 
 
-const Room = () => {
+const Room = (props) => {
     const [isOpen, toggle] = Toggle();
 
     const [roomData, setRoomData] = useState({
       username: '',
       room: '',
-      message: ''
+      message: '',
+      chatCreated: false,
+      rooms: []
     });
 
-    const { username, room, message } = roomData;
+    const { username, room, message, chatCreated, rooms } = roomData;
 
     const onChange = (e) => {
       setRoomData({
@@ -27,8 +29,9 @@ const Room = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        // alert(message)
 
-        socket.emit('chat message', message);
+        socket.emit('chat message', message, room);
 
         socket.on('message', function(data) {
             console.log('Incoming message:', data);
@@ -40,32 +43,57 @@ const Room = () => {
         });
     }
 
+    socket.on('connection', (id) => {
+        console.log(rooms)
 
-    useEffect(() => {
-        //toggle()
-        let x = Math.random();
-        let room;
-        if(x > 0.5) {
-            room = 'x'; //(Math.random());
-        } else {
-            room = 'y'; //(Math.random());
-        }
+    });
 
-        socket.on('connection', (id) => {
             socket.on('chat message', function (message, id) {
-                const chatbox = document.querySelector('#chatbox__text-view');
-                const textMessage = document.createElement("li");
-                textMessage.appendChild(document.createTextNode(id + ' Says: ' + message));
-                chatbox.appendChild(textMessage);
-                console.log(`${id}: ${message}`);
-            });
+        const chatbox = document.querySelector('#chatbox__text-view');
+        const textMessage = document.createElement("li");
+        textMessage.appendChild(document.createTextNode(id[0] + ' Says: ' + message));
+        chatbox.appendChild(textMessage);
+        console.log(`${id}: ${message}`);
+    });
 
-            socket.emit('create', room);
+
+
+
+    if(chatCreated) {
+        socket.emit('create', room);
+        console.log('CHAT CREATED')
+
+        setRoomData({
+            ...roomData,
+            chatCreated: false
         });
 
-        socket.emit('create', room);
+    }
 
-        console.log(`${room} was created.`);
+    useEffect(() => {
+
+        if(props.location.aboutProps) {
+            socket.emit('create', props.location.aboutProps.name);
+            
+            //alert(props.location.aboutProps.name)
+            setRoomData({
+                ...roomData,
+                room: props.location.aboutProps.name,
+                chatCreated: false
+            });
+
+    } else {
+        toggle();
+    }
+
+
+        if (!room) {
+            //toggle();
+        }
+
+        //socket.emit('create', room);
+
+        //console.log(`${room} was created.`);
 
     }, []);
 

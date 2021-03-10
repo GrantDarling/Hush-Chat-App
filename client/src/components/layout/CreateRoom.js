@@ -5,7 +5,7 @@ const socket = io.connect('http://localhost:5000');
 
 const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
 
-  const { username, room } = roomData;
+  const { username, room, rooms } = roomData;
 
 
     const onChange = (e) => {
@@ -24,6 +24,12 @@ const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
   const createRoom = () => {
     socket.emit('create', room);
 
+    setRoomData({
+      ...roomData,
+      chatCreated: true,
+      rooms: rooms.push(room)
+    });
+
     console.log(`${room} was created.`);
   }
 
@@ -39,7 +45,8 @@ const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
           placeholder='Room'
           value={room}
           onChange={onChange}
-          required /> 
+          //required 
+        /> 
 
         <label onClick={closeModal} htmlFor='username'>Username</label>
         <input 
@@ -48,7 +55,8 @@ const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
           placeholder='Username'
           value={username}
           onChange={onChange}
-          required /> 
+          //required 
+        /> 
 
           <button type="submit" name='submit'>
             Create room

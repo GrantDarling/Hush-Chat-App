@@ -5,7 +5,7 @@ const Modal = ({ closeModal, children }) => {
   return (
     <section className='modal-backdrop'>
       <div className='modal'>
-        <NavLink to='/'><button className='modal-button' onClick={closeModal}>X</button></NavLink>
+        <button className='modal-button' onClick={closeModal}>X</button><NavLink to='/'></NavLink>
         {children}
       </div>
     </section>
