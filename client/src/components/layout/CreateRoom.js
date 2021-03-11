@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import io from 'socket.io-client';
 const socket = io.connect('http://localhost:5000');
-
+var socketIOClient = require('socket.io-client')
 
 const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
 
@@ -22,16 +22,22 @@ const CreateRoom = ({ closeModal, roomData, setRoomData }) => {
   };
 
   const createRoom = () => {
-    socket.emit('create', room);
+      socket.emit('create', room);
 
-    setRoomData({
-      ...roomData,
-      chatCreated: true,
-      rooms: rooms.push(room)
-    });
+      setRoomData({
+        ...roomData,
+        chatCreated: true,
+        rooms: rooms.push(room)
+      });
 
-    console.log(`${room} was created.`);
+      console.log(`${room} was created.`);
   }
+
+
+  useEffect(() => {
+    socketIOClient('http://localhost:5000')
+
+   }, []);
 
   return (
     <div className='create-room'>

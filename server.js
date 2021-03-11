@@ -17,6 +17,8 @@ let allRooms = ['test'];
 io.on('connection', (socket) => {
   const { id } = socket.client;
 
+
+
     // const rooms = socket.rooms;
 
     //   console.log('looping rooms...');
@@ -27,17 +29,17 @@ io.on('connection', (socket) => {
 
   //console.log(Object.keys(socket.rooms).filter(item => item!=socket.id));
 
-  io.emit('connection', id);
+  //io.emit('connection', id);
 
   // Create room
-  socket.on('create', function (room) {
+  socket.once('create', function (room) {
     socket.join(room.toString());
     allRooms.push(room);
 
-    console.log(`These are all my rooms: ${allRooms}`)
-
     io.to("x").emit('chat message', "In Chatroom X!", id);
     io.to("y").emit('chat message', "In Chatroom Y!", id);
+
+    console.log(`These are all my rooms: ${allRooms}`)
 
     //console.log(`${id} connected to ${room}`);
       //console.log(io.sockets.adapter.rooms);
@@ -62,7 +64,7 @@ io.on('connection', (socket) => {
 
     io.to(room).emit('chat message', message, id);
     //io.emit('chat message', message, id);
-    io.sockets.in("test").emit('chat message', message, id);
+    //io.sockets.in("test").emit('chat message', message, id);
   });
 
 

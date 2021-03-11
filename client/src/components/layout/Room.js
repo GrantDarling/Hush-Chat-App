@@ -43,17 +43,15 @@ const Room = (props) => {
         });
     }
 
+      useEffect(() => {
+
+        }, []);
+
+
+
     socket.on('connection', (id) => {
         console.log(rooms)
 
-    });
-
-            socket.on('chat message', function (message, id) {
-        const chatbox = document.querySelector('#chatbox__text-view');
-        const textMessage = document.createElement("li");
-        textMessage.appendChild(document.createTextNode(id[0] + ' Says: ' + message));
-        chatbox.appendChild(textMessage);
-        console.log(`${id}: ${message}`);
     });
 
 
@@ -86,6 +84,13 @@ const Room = (props) => {
         toggle();
     }
 
+            socket.on('chat message', function (message, id) {
+        const chatbox = document.querySelector('#chatbox__text-view');
+        const textMessage = document.createElement("li");
+        textMessage.appendChild(document.createTextNode(id[0] + ' Says: ' + message));
+        chatbox.appendChild(textMessage);
+        console.log(`${id}: ${message}`);
+    });
 
         if (!room) {
             //toggle();
