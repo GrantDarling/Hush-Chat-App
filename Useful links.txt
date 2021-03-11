@@ -1,0 +1,2 @@
+Testing: https://www.smashingmagazine.com/2020/06/practical-guide-testing-react-applications-jest/
+Connecting WebRTC with socket.io: https://tsh.io/blog/how-to-write-video-chat-app-using-webrtc-and-nodejs/
