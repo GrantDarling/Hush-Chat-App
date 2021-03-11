@@ -4,25 +4,17 @@ import Logo from '../../images/hush_logo.png';
 
 const Navbar = () => {
   return (
-    <nav className='navbar'>
+    <nav className='Navbar'>
       <NavLink exact to='/'>
-        <img className='navbar__logo' src={Logo} alt='Logo' />
+        <img className='logo' src={Logo} alt='Logo' />
       </NavLink>
-      <div className='navbar__items-container'>
-        <div className='navbar__items'>
-          <NavLink exact to='/'>
-            HOME
-          </NavLink>
-          <span> | </span>
-          <NavLink exact to='/lobby'>
-            LOBBY
-          </NavLink>
-          <span> | </span>
-          <NavLink to='/room'>
-            NEW ROOM
-          </NavLink>
+      <div className='links-container'>
+        <div className='links'>
+          <NavLink exact to='/'>HOME</NavLink><span> | </span>
+          <NavLink exact to='/lobby'>LOBBY</NavLink><span> | </span>
+          <NavLink to='/room'>NEW ROOM</NavLink>
         </div>
-        <div className='navbar__tagline'>
+        <div className='tagline'>
           the only chat app that doesn't care enough to track you.
         </div>
       </div>

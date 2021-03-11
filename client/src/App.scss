@@ -3,22 +3,22 @@
 *************/
 
 /* VENDORS */
-@import 'styles/Vendors/bourbon/bourbon';
+@import 'styles/vendors/bourbon/bourbon';
 
 /* ABSTRACT */
-@import 'styles/Abstract/variables';
-@import 'styles/Abstract/mixins';
-@import 'styles/Abstract/fonts';
+@import 'styles/abstract/variables';
+@import 'styles/abstract/mixins';
+@import 'styles/abstract/fonts';
 
 /* BASE */
-@import 'styles/Base/base';
+@import 'styles/base/base';
 
 /* LAYOUT */
-@import 'styles/Layout/navbar';
+@import 'styles/layout/navbar';
 
 /* COMPONENTS */
-@import 'styles/Components/modals';
+@import 'styles/components/modals';
 
 /* PAGES */
-@import 'styles/Pages/landing';
-@import 'styles/Pages/room';
+@import 'styles/pages/landing';
+@import 'styles/pages/room';

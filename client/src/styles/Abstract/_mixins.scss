@@ -4,6 +4,17 @@
 
 @mixin flex-position($horizontal: center, $vertical: center) {
   display: flex;
-  justify-content: $vertical;
   align-items: $horizontal;
+  justify-content: $vertical;
+}
+
+@mixin box($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+@mixin font($font-family, $font-weight, $font-size) {
+  font-family: $font-family;
+  font-weight: $font-weight;
+  font-size: $font-size;
 }
