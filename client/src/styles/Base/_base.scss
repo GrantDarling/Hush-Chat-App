@@ -2,7 +2,6 @@
     Base
 *************/
 
-
 html,
 body,
 #root {
@@ -10,8 +9,14 @@ body,
   height: 100%;
 }
 
+section, div, h1, h2, h3, h4, h5, p {
+  font-family: $primary-font;
+  color: $HUSH_BLACK;
+}
+
 .container {
   @include flex-position();
   width: 100%;
   height: calc(100% - 133px);
 }
+

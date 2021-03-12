@@ -4,6 +4,8 @@
 
 // Greyscale Variables
 $black: black;
+$grey-coal: #464646;
+$white-alabaster: #E2DADA;
 $grey-mine: #2d2d2d;
 $grey-dove: #696969;
 $white: white;
@@ -14,7 +16,15 @@ $orange-jaffa: #e78b46;
 // Main Colors
 $HUSH_ORANGE: $orange-jaffa;
 $HUSH_GREY: $grey-dove;
+$HUSH_BLACK: $grey-coal;
 
 // Fonts
 $primary-font: 'Ubuntu', sans-serif;
 $secondary-font: 'Source Code Pro', monospace;
+
+// General 
+$border-radius: 8px;
+$border: solid 1px $white-alabaster;
+$border-hover: solid 1px $HUSH_ORANGE;
+$box-shadow: 11px 13px 8px -10px rgba(84,84,84,0.20);
+$box-shadow-hover: 11px 13px 8px -13px $HUSH_ORANGE;

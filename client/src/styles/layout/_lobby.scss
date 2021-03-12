@@ -1,0 +1,98 @@
+/*************
+    Lobby
+*************/
+
+.Lobby {
+    @include flex-position(flex-start, center);
+    height: 100%;
+    margin-top: 10%;
+}
+
+.chatrooms, .chatroom,
+.details-container {
+    display: flex;
+}
+
+.chatrooms {
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .chatroom {
+        min-width: 400px;
+        min-height: 125px;
+        box-shadow: $box-shadow;
+        border-radius: $border-radius;
+        border: $border;
+        padding: 20px 30px;
+        margin: 20px;
+
+
+        .details-container {
+            flex-direction: column;
+            line-height: 1.5;
+            height: 125px;
+
+            h3 {
+                margin: 0;
+                font-size: 22px;
+                font-weight: 500;
+                font-family: $secondary-font;
+                font-size: 700;
+            }
+
+            h3:last-child {
+                margin-top: auto;
+            }
+
+            small {
+                color: $grey-dove;
+                padding-right: 10px;
+                font-size: 20px;
+                font-family: $primary-font;
+            }
+        }
+
+        .join {
+            @include margin(auto null null auto);
+            border: $border;
+            border-radius: $border-radius;
+            box-shadow: $box-shadow;
+            padding: 10px;
+            height: 17px;
+            width: 100px;
+            text-align: center;
+            text-decoration: none;
+            color: $HUSH_ORANGE;
+
+            &:hover {
+                border: $border-hover;
+            }
+        }
+    }
+}
+
+.chatroom--locked {
+    @extend .chatroom;
+
+    background: #00000008;
+
+    .join {
+        cursor: default;
+        pointer-events: none;
+        border: none;
+        box-shadow: none;
+        color: $black !important;
+    }
+}
+
+.chatrooms--none {
+
+    .Lobby & {
+        @include flex-position(center, center);
+        height: 100%;
+    }
+
+    h1 {
+        font-family: $secondary-font;
+    }
+}
