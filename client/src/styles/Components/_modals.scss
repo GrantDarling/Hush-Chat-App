@@ -4,48 +4,46 @@
 
 .modal {
     position: relative;
-    background: #f9f9f9;
+    box-shadow: $box-shadow;
+    font-family: $primary-font;
+    background: $white-alabaster;
     width: 420px;
     border-radius: 8px;
-    box-shadow: 1px 5px 7px $HUSH_GREY;
-    font-family: $primary-font;
 
     &-backdrop {
         @include position(absolute, 0 0 0 0);
         @include flex-position();
-        background: #1f1f1f66;
+        background: $black-modal;
     }
 
     &-header,
     &-footer {
-        width: 100%;
-        height: 50px;
+        @include box(100%, 50px);
     }
 
     &-header {
-        border-bottom: solid 1px #cfcfcf;
+        border-bottom: solid 1px $grey-alto;
     }
 
     &-footer {
-        border-top: solid 1px #cfcfcf;
+        border-top: solid 1px $grey-alto;
     }
 
     &-button {
         cursor: pointer;
         @include position(absolute, 0 0 null null);
-        height: 50px;
-        width: 50px;
+        @include box(50px);
         color: $white;
-        background: $grey-mine url('../../images/x.png') no-repeat center;
+        background: $HUSH_BLACK url('../../images/x.png') no-repeat center;
         border-radius: 0 8px 0 0;
         border:none;
 
-        &:focus {
-           outline: 0;
+        &:hover {
+            background: $grey-coal url('../../images/x.png') no-repeat center;
         }
 
-        &:hover {
-            // background: #3f3f3f url('../../images/x.png') no-repeat center;
+        &:focus {
+           outline: 0;
         }
     }
 
@@ -69,24 +67,23 @@
             width: 100%;
         }
 
-        input {
-            width: 98%;
-            height: 40px;
-            font-size: 18px;
+        input,
+        button {
             border-radius: 4px;
-            border: solid 1px grey;
+            border: solid 1px $grey;
             box-shadow: 1px 1px 1px #cfcece;
+        }
+
+        input {
+            @include box(98%, 40px);
+            font-size: 18px;
             margin: 10px 0 20px 0;
         }
 
         button {
-            background: $white;
             background: none;
+            color: $HUSH_BLACK;
             height: 50px;
-            color: $grey-mine;
-            border: solid 1px grey;
-            box-shadow: 1px 1px 1px #cfcece;
-            border-radius: 6px;
             
             &:hover {
                 background: $HUSH_BLACK;
@@ -95,4 +92,3 @@
         }
     }
 }
-

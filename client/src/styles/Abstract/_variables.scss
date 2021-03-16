@@ -4,10 +4,14 @@
 
 // Greyscale Variables
 $black: black;
+$black-modal: #1f1f1f66;
 $grey-mine: #2d2d2d;
 $grey-coal: #3D3D3D;
 $grey-dove: #696969;
-$white-alabaster: #E2DADA;
+$grey: grey;
+$grey-alto: #cfcfcf;
+$white-alabaster: #f9f9f9;
+$white-swiss: #E2DADA;
 $white: white;
 
 // Color Variables
@@ -16,7 +20,7 @@ $orange-jaffa: #e78b46;
 // Main Colors
 $HUSH_ORANGE: $orange-jaffa;
 $HUSH_GREY: $grey-dove;
-$HUSH_BLACK: $grey-coal;
+$HUSH_BLACK: $grey-mine;
 
 // Fonts
 $primary-font: 'Ubuntu', sans-serif;
