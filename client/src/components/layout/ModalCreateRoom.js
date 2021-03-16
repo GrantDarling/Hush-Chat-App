@@ -2,15 +2,15 @@ import React from 'react';
 
 const ModalCreateRoom = () => {
   return (
-    <div className='ModalCreateRoom'>
+    <div className='modal-child'>
       <h1>CREATE ROOM</h1>
       <form>
-        <label htmlFor='room'>Room</label>
-        <input /> 
-        <label htmlFor='username'>Your Name</label>
-        <input /> 
-        <button type="submit" name='submit'>Create room</button>
-      </form>
+        <label htmlFor='room'>Room Name:</label>
+        <input placeholder="Room Name" /> 
+        <label htmlFor='username'>Username:</label>
+        <input placeholder="Username" /> 
+        <button type="submit" name='submit'>CREATE</button>
+      </form> 
     </div>
   );
 };

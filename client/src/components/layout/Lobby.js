@@ -1,4 +1,6 @@
 import React from 'react';
+import Modal from './Modal';
+import JoinRoom from './ModalJoinRoom';
 
 const Lobby = () => {
   return (
@@ -39,6 +41,10 @@ const Lobby = () => {
           <div className='join'>JOIN</div>
         </div> 
       </div>
+
+      <Modal>
+        <JoinRoom />
+      </Modal>
     </section>
   );
 };

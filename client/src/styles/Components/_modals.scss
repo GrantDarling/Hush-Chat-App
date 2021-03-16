@@ -5,12 +5,9 @@
 .modal {
     position: relative;
     background: #f9f9f9;
-    height: 400px;
-    width: 400px;
-    padding: 10px;
-    border-radius: 5px;
-    border: solid 3px #524f4f;
-    box-shadow: 1px 2px 4px $HUSH_GREY;
+    width: 420px;
+    border-radius: 8px;
+    box-shadow: 1px 5px 7px $HUSH_GREY;
     font-family: $primary-font;
 
     &-backdrop {
@@ -19,14 +16,37 @@
         background: #1f1f1f66;
     }
 
+    &-header,
+    &-footer {
+        width: 100%;
+        height: 50px;
+    }
+
+    &-header {
+        border-bottom: solid 1px #cfcfcf;
+    }
+
+    &-footer {
+        border-top: solid 1px #cfcfcf;
+    }
+
     &-button {
         cursor: pointer;
-        @include position(absolute, -10px -10px null null);
-        height: 30px;
-        width: 30px;
-        background: $grey-mine;
+        @include position(absolute, 0 0 null null);
+        height: 50px;
+        width: 50px;
         color: $white;
-        border-radius: 3px;
+        background: $grey-mine url('../../images/x.png') no-repeat center;
+        border-radius: 0 8px 0 0;
+        border:none;
+
+        &:focus {
+           outline: 0;
+        }
+
+        &:hover {
+            // background: #3f3f3f url('../../images/x.png') no-repeat center;
+        }
     }
 
     h1 {
@@ -35,46 +55,44 @@
     }
 }
 
-/* Create Room Modal */
+/* Modal Child */
 
-.create-room {
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+.modal-child {
+    padding: 10px 40px;
 
     form {
-        width: 100%;
+        margin-bottom: 30px;
 
         label,
-        input {
-            display: block;
-            width: 95%;
-            font-size: 16px;
+        button {
+            font-size: 20px;
+            width: 100%;
         }
 
         input {
-            margin: 0 0 20px 0;
-            height: 30px;
-        }
-
-        label {
-            margin: 0 0 10px 0;
+            width: 98%;
+            height: 40px;
+            font-size: 18px;
+            border-radius: 4px;
+            border: solid 1px grey;
+            box-shadow: 1px 1px 1px #cfcece;
+            margin: 10px 0 20px 0;
         }
 
         button {
-            width: 97%;      
-            height: 30px;  
-            font-size: 16px;
+            background: $white;
             background: none;
-            border: none;
-            box-shadow: 1px 2px 4px $HUSH_GREY;
-
+            height: 50px;
+            color: $grey-mine;
+            border: solid 1px grey;
+            box-shadow: 1px 1px 1px #cfcece;
+            border-radius: 6px;
+            
             &:hover {
-                background: $grey-mine;
+                background: $HUSH_BLACK;
                 color: $white;
             }
         }
     }
 }
+

@@ -1,4 +1,6 @@
 import React from 'react';
+import Modal from './Modal';
+import CreateRoom from './ModalCreateRoom';
 
 const Room = () => {
     // Fix the CSS class names 
@@ -20,6 +22,8 @@ const Room = () => {
             <video className='room__your-video' />
             <video className='room__guest-video' />
         </div>
+
+        <Modal><CreateRoom /></Modal>
     </section>
   );
 };
