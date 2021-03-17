@@ -120,24 +120,25 @@
             }
         }
 
-        .message-host {
+        .message-guest {
             margin: 20px 0 20px 20px;
 
             p {
+                background: $HUSH_BLACK;
+                color: $white;
+            }
+        }
+
+        .message-host {
+            margin: 20px 20px 20px 0;
+            text-align: right;
+
+            p {
+                text-align: left;
                 background: $white;
                 color: $HUSH_BLACK;
                 box-shadow: $box-shadow;
                 border: solid 1px $white-swiss;
-            }
-        }
-
-        .message-guest {
-            margin: 20px 20px 20px 0;
-            text-align: right;
-            p {
-                background: $HUSH_BLACK;
-                color: $white;
-                text-align: left;
             }
         }
     }
