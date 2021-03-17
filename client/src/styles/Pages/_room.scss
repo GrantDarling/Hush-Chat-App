@@ -2,46 +2,143 @@
     Room
 *************/
 
-.room-container {
+.Room {
+    display: flex;
+    flex-wrap: wrap;
+
+    &-name {
+        width: 100%;
+        color: $HUSH_BLACK;
+    }
+}
+
+.chatbox {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
     max-height: 500px;
     max-width: 800px;
-    height: 100%;
-    width: 100%;
-    margin: 0 50px;
-    border: solid 1px coral;
+    @include box(100%);
+    border: solid 1px $white-swiss;
+    border-radius: 10px;
+    box-shadow: $box-shadow;
 }
 
-.chatbox {
-    border: solid 1px gold;
-    width: 70%;
+// Input Controller 
+.input-controller {
+    height: 50px;
 
-    &__text-view {
-        height: 90%;
+    input,
+    button {
+        box-sizing: border-box;
+        height: 100%;
+        font-size: 20px;
     }
 
-    &__input {
-        margin-top: auto;
+    input {
+        width: 80%;
+        border: solid 1px $white-swiss;
+    }
 
-        input {
-            box-sizing: border-box;
-            width: 80%;
-            height: 35px;
-        }
-        button {
-            box-sizing: border-box;
-            width: 20%;
-            border: none;
-            background: $black;
-            color: $white;
-            height: 35px;
-        }
+    button {
+        color: $white;
+        background: $HUSH_BLACK;
+        font-family: $primary-font;
+        width: 20%;
+        border: none;
     }
 }
+
+// Video
 
 .videos {
-    border: solid 1px fuchsia;
-    width: 30%;
+    width: 40%;
+    margin-top: auto;
+
+    .host,
+    .guest {
+        position: relative;
+
+        h4 {
+            @include position(absolute, null null 20px 20px);
+            margin: 0;
+            color: $HUSH_GREY;
+        }
+
+        img {
+             width: 100%;
+        }
+    }
+
+    .guest {
+        h4 {
+            color:$HUSH_ORANGE;
+        }
+    }
+}
+
+.chat {
+    border-right: solid 1px $white-swiss;
+    width: 70%;
+
+    .messages {
+        height: 82%;
+        padding: 20px;
+        overflow-y: scroll;
+        // box-shadow: inset 0 0 10px black;
+
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        .message-emit {
+            li {
+                color: $grey-alto;
+                list-style-type: none;
+                font-style: italic;
+                margin: 5px 0;
+            }
+        }
+
+        .message-host,
+        .message-guest {
+
+            h3 {
+                width: 100%;
+                margin: 5px 0;
+                color: $HUSH_BLACK;
+                font-size: 16px;
+                font-weight: 400;
+            }
+            p {
+                display:inline-block;
+                max-width: 45%;
+                border-radius: 6px;
+                padding: 15px 40px;
+                margin: 5px 0;
+            }
+        }
+
+        .message-host {
+            margin: 20px 0 20px 20px;
+
+            p {
+                background: $white;
+                color: $HUSH_BLACK;
+                box-shadow: $box-shadow;
+                border: solid 1px $white-swiss;
+            }
+        }
+
+        .message-guest {
+            margin: 20px 20px 20px 0;
+            text-align: right;
+            p {
+                background: $HUSH_BLACK;
+                color: $white;
+                text-align: left;
+            }
+        }
+    }
 }
