@@ -2,8 +2,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Modal from './Modal';
 import JoinRoom from './ModalJoinRoom';
+import ModalSwitch from '../logical/Modal'
 
 const Lobby = () => {
+  const [isOpen, toggleModal] = ModalSwitch();
+  
   return (
     <section className='Lobby'>
        {/* No Chatrooms */}
@@ -19,7 +22,7 @@ const Lobby = () => {
             <h3><small>Host: </small>Kyle88</h3>
             <h4>Capacity: 1/2</h4>
           </div>
-          <NavLink exact to='/lobby' className='join' onClick={toggleModal} >JOIN</NavLink>
+          <NavLink exact to='/lobby' className='join' onClick={toggleModal}>JOIN</NavLink>
         </div>
 
       {/* Chatroom locked */}
@@ -43,7 +46,7 @@ const Lobby = () => {
         </div> 
       </div>
 
-      <Modal>
+      <Modal isOpen={isOpen} toggleModal={toggleModal}>
         <JoinRoom />
       </Modal>
     </section>

@@ -1,15 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import ModalSwitch from '../logical/Modal'
 
 const Modal = ({ children, toggleModal, isOpen }) => {
-  
-  isOpen ? console.log('Modal is open.') : console.log('Modal is closed.')
-
   return (
     <section className={isOpen ? 'modal-backdrop' : 'display-none'}>
       <div className='modal'>
         <div className='modal-header'></div>
-        <button className='modal-button' onClick={toggleModal}></button><NavLink to='/'></NavLink>
+        <NavLink to='/' className='modal-button' onClick={toggleModal}></NavLink>
           {children}
         <div className='modal-footer'></div>
       </div>

@@ -5,6 +5,7 @@ const ModalSwitch = () => {
 
     const toggleModal = () => {
         setIsOpen(!isOpen);
+        console.log(isOpen);
     };
 
     return [isOpen, toggleModal];
