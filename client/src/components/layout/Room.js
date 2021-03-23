@@ -1,11 +1,10 @@
 import React from 'react';
-// import Modal from './Modal';
-// import CreateRoom from './ModalCreateRoom';
+import Modal from './Modal';
+import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 
 const Room = () => {
-    // Fix the CSS class names 
   return (
     <section className='Room'>
         <h3 className='Room-name'>Chatroom: The Cool Kids</h3>
@@ -61,7 +60,10 @@ const Room = () => {
                 <video className='guest' /> */}
             </div>
 
-            {/* <Modal><CreateRoom /></Modal> */}
+            <Modal>
+                <CreateRoom />
+            </Modal>
+
         </div>
     </section>
   );

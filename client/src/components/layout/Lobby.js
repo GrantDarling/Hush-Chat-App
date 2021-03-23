@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import Modal from './Modal';
 import JoinRoom from './ModalJoinRoom';
 
@@ -18,7 +19,7 @@ const Lobby = () => {
             <h3><small>Host: </small>Kyle88</h3>
             <h4>Capacity: 1/2</h4>
           </div>
-          <a href='/lobby' className='join'>JOIN</a>
+          <NavLink exact to='/lobby' className='join' onClick={toggleModal} >JOIN</NavLink>
         </div>
 
       {/* Chatroom locked */}

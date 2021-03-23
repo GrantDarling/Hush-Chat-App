@@ -9,7 +9,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
-    "react-test-renderer": "^17.0.1",
     "socket.io-client": "^3.1.1",
     "web-vitals": "^1.0.1"
   },
@@ -37,5 +36,10 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "react-test-renderer": "^17.0.1"
+  }
 }

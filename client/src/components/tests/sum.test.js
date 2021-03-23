@@ -1,6 +1,15 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
-import Navbar from '../Layout/Navbar';
+import React from "react";
+import { mount, shallow } from "enzyme";
+import App from "../../App";
+
+import "./setupTest";
+
+//import toJson from "enzyme-to-json";
+
+it("renders without crashing", () => {
+  shallow(<App />);
+});
+
 
 const sum = require('./sum');
 
