@@ -7,6 +7,8 @@ const ModalCreateRoom = () => {
       <form>
         <label htmlFor='username'>Username:</label>
         <input placeholder="Username" /> 
+        <label htmlFor='video'>Allow Video?</label>
+        <input type="checkbox" className="checkmark" />
         <button type="submit" name='submit'>JOIN</button>
       </form> 
     </div>
