@@ -9,27 +9,58 @@ const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();
     const roomExists = useRef(false);
 
+    const [room, setRoom] = useState({
+        roomName: '',
+        hostUsername: '',
+        allowVideo: '',
+        chatMessage: ''
+    })
+        
+    const { roomName, hostUsername, allowVideo, chatMessage } = room;
+
     useEffect(() => {
         if(!roomExists.current) {
             roomExists.current = true;
             toggleModal();
         }
     },[toggleModal, roomExists])
-    
-    const [room, setRoom] = useState({
-        roomName: '',
-        hostUsername: '',
-        allowVideo: ''
-    })
 
-    const { roomName, hostUsername, allowVideo } = room;
+    const onChange = (e) => {
+        setRoom({
+        ...room,
+        [e.target.name]: e.target.value
+        })
+    }
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+
+        const chatContainer = document.getElementById('chat');
+        const messageContainer = document.createElement('div');
+        const messageSender = document.createElement('h3');
+        const messageTextContainer = document.createElement('p');
+        
+        messageContainer.classList.add('message-host');
+        messageContainer.appendChild(messageSender);
+        messageSender.innerHTML = `@${hostUsername}`;
+        messageContainer.appendChild(messageTextContainer);
+        messageTextContainer.innerHTML = `${chatMessage}`;
+
+        chatContainer.appendChild(messageContainer);
+        chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
+
+        setRoom({
+            ...room,
+            chatMessage: ''
+        });
+    }
 
     return (
         <section className='Room'>
             <h3 className='Room-name'>Chatroom: {roomName}</h3>
             <div className='chatbox'> 
                 <div className='chat'>
-                    <div className='messages'>
+                    <div className='messages' id='chat'>
                         <ul className="message-emit">
                             <li>'{roomName}' group created...</li>
                             <li>@{hostUsername} has entered the chat.</li>
@@ -60,8 +91,8 @@ const Room = () => {
                             </p>
                         </div>
                     </div>
-                    <form className='input-controller'>
-                        <input type="text" name='message' />
+                    <form className='input-controller' onSubmit={sendMessage}>
+                        <input type="text" id='message-input' name='chatMessage' value={chatMessage} onChange={onChange} />
                         <button type='submit'>SEND</button>
                     </form>
                 </div>
@@ -80,7 +111,7 @@ const Room = () => {
                 </div>
 
                 <Modal isOpen={isOpen} toggleModal={toggleModal} >
-                    <CreateRoom roomName={roomName} hostUsername={hostUsername} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} />
+                    <CreateRoom roomName={roomName} hostUsername={hostUsername} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} onChange={onChange} />
                 </Modal>
 
             </div>

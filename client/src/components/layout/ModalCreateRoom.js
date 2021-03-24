@@ -1,13 +1,6 @@
 import React from 'react';
 
-const ModalCreateRoom = ({ roomName, hostUsername, allowVideo, setRoom, room, toggleModal }) => {
-
-  const onChange = (e) => {
-      setRoom({
-      ...room,
-      [e.target.name]: e.target.value
-      })
-  }
+const ModalCreateRoom = ({ roomName, hostUsername, allowVideo, onChange, toggleModal }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
