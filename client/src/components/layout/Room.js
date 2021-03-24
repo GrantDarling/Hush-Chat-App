@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -9,24 +9,31 @@ const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();
 
     useEffect(() => {
-        if(!isOpen) {
-            toggleModal();
-        }
-    }, [toggleModal, isOpen])
+        toggleModal();
+    }, [])
+
+    const [room, setRoom] = useState({
+        roomName: '',
+        hostUsername: '',
+        allowVideo: "true"
+    })
+
+    
+    const { roomName, hostUsername, allowVideo } = room;
 
     return (
         <section className='Room'>
-            <h3 className='Room-name'>Chatroom: The Cool Kids</h3>
+            <h3 className='Room-name'>Chatroom: {roomName}</h3>
             <div className='chatbox'> 
                 <div className='chat'>
                     <div className='messages'>
                         <ul className="message-emit">
-                            <li>'The Cool Kids' Group Created...</li>
-                            <li>@Grant69 has entered the chat.</li>
+                            <li>'{roomName}' group created...</li>
+                            <li>@{hostUsername} has entered the chat.</li>
                             <li>@LukeSkywalker has entered the chat.</li>
                         </ul>
                         <div className='message-host'>
-                            <h3>@grantd16</h3>
+                            <h3>@{hostUsername}</h3>
                             <p>Hey man!</p>
                         </div>
                         <div className='message-guest'>
@@ -42,7 +49,7 @@ const Room = () => {
                             </p>
                         </div>
                         <div className='message-host'>
-                            <h3>@lukeskywalker</h3>
+                            <h3>@{hostUsername}</h3>
                             <p>This is an example of a super 
                                 Long message that I hope isn’t 
                                 Too long but it needed to be 
@@ -57,8 +64,8 @@ const Room = () => {
                 </div>
                 <div className='videos'>
                     <div className='host'>
-                        <h4 className='username' >@Grant69</h4>
-                        <img src={HostPlaceholder}  alt="Host Placeholder"/>
+                        <h4 className='username' >@{hostUsername} {allowVideo}</h4>
+                        <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!allowVideo ? '' : 'display-none' } />
                     </div>
                     <div className='guest'>
                         <h4 className='username' >@LukeSkywalker</h4>
@@ -69,8 +76,8 @@ const Room = () => {
                     <video className='guest' /> */}
                 </div>
 
-                <Modal isOpen={isOpen} toggleModal={toggleModal}>
-                    <CreateRoom />
+                <Modal isOpen={isOpen} toggleModal={toggleModal} >
+                    <CreateRoom roomName={roomName} hostUsername={hostUsername} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} />
                 </Modal>
 
             </div>
