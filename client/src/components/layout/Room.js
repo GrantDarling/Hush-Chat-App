@@ -8,14 +8,18 @@ import ModalSwitch from '../logical/Modal'
 const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();
 
-    useEffect(() => {
+    const init = () => {
         toggleModal();
+    }
+
+    useEffect(() => {
+        init();     
     }, [])
 
     const [room, setRoom] = useState({
         roomName: '',
         hostUsername: '',
-        allowVideo: "true"
+        allowVideo: ''
     })
 
     
