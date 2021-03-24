@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -7,22 +7,21 @@ import ModalSwitch from '../logical/Modal'
 
 const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();
-
-    const init = () => {
-        toggleModal();
-    }
+    const roomExists = useRef(false);
 
     useEffect(() => {
-        init();     
-    }, [])
-
+        if(!roomExists.current) {
+            roomExists.current = true;
+            toggleModal();
+        }
+    },[toggleModal, roomExists])
+    
     const [room, setRoom] = useState({
         roomName: '',
         hostUsername: '',
         allowVideo: ''
     })
 
-    
     const { roomName, hostUsername, allowVideo } = room;
 
     return (

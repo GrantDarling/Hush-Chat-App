@@ -12,7 +12,7 @@ const Navbar = () => {
         <div className='links'>
           <NavLink exact to='/'>HOME</NavLink><span> | </span>
           <NavLink exact to='/lobby'>LOBBY</NavLink><span> | </span>
-          <NavLink exact to={{pathname:'/room', state:{triggerModal: true} }} >NEW ROOM</NavLink>
+          <NavLink exact to={{pathname:'/room', state:{roomExists: false} }} >NEW ROOM</NavLink>
         </div>
         <div className='tagline'>
           the only chat app that doesn't care enough to track you.
