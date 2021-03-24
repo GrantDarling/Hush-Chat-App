@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import ModalSwitch from '../logical/Modal'
 
 const Modal = ({ children, toggleModal, isOpen }) => {
   return (

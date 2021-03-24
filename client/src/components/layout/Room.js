@@ -5,14 +5,14 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal'
 
-const Room = (props) => {
+const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();
 
     useEffect(() => {
-        /* if(!roomExists) { */
+        if(!isOpen) {
             toggleModal();
-        /* } */
-    }, [])
+        }
+    }, [toggleModal, isOpen])
 
     return (
         <section className='Room'>
