@@ -6,13 +6,15 @@ import Landing from '../layout/Landing';
 import Room from '../layout/Room';
 import Lobby from '../layout/Lobby';
 
-const Routes = () => {
+const Routes = ({socket}) => {
+  console.log(socket)
+
   return (
     <section className='container'>
-      <Switch>
+      <Switch socket={socket} >
         <Route exact path='/' component={Landing} />
-        <Route exact path='/room' component={Room} />
-        <Route exact path='/lobby' component={Lobby}  />
+  <Route exact path='/room' component={() => <Room socket={socket} />} />
+        <Route exact path='/lobby' component={() => <Lobby socket={socket} />} />
       </Switch>
     </section>
   );

@@ -3,22 +3,19 @@ import { NavLink } from 'react-router-dom';
 import Modal from './Modal';
 import JoinRoom from './ModalJoinRoom';
 import ModalSwitch from '../logical/Modal';
-import io from 'socket.io-client';
-const socket = io.connect('http://localhost:5000');
 
-
-const Lobby = () => {
+const Lobby = ({socket}) => {
   const [isOpen, toggleModal] = ModalSwitch(); // !!! potentially unused
   const [lobby, setLobby] = useState([]);
 
   useEffect(() => {
 
     // Get list of available rooms
-    socket.on('get rooms', (activeRooms) => {
-      console.log(activeRooms);
-      setLobby(activeRooms)
-    });
-    socket.emit('get rooms');
+    // socket.on('get rooms', (activeRooms) => {
+    //   console.log(activeRooms);
+    //   setLobby(activeRooms)
+    // });
+    // socket.emit('get rooms');
 
   }, []);
   

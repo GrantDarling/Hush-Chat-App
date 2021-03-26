@@ -4,10 +4,9 @@ import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal'
-import io from 'socket.io-client';
-const socket = io.connect('http://localhost:5000');
 
-const Room = () => {
+const Room = ({ socket }) => {
+    console.log(socket);
     const [isOpen, toggleModal] = ModalSwitch();
     const roomExists = useRef(false);
 
@@ -42,22 +41,22 @@ const Room = () => {
             toggleModal();
         }
 
-        socket.on('chat message', (message) => {
-            console.log(message);
-            let chatContainer = document.getElementById('chat');
-            let messageContainer = document.createElement('div');
-            let messageSender = document.createElement('h3');
-            let messageTextContainer = document.createElement('p');
+        // socket.on('chat message', (message) => {
+        //     console.log(message);
+        //     let chatContainer = document.getElementById('chat');
+        //     let messageContainer = document.createElement('div');
+        //     let messageSender = document.createElement('h3');
+        //     let messageTextContainer = document.createElement('p');
 
-            messageContainer.classList.add('message-host');
-            messageContainer.appendChild(messageSender);
-            messageSender.innerHTML = `@${hostUsername}`;
-            messageContainer.appendChild(messageTextContainer);
-            messageTextContainer.innerHTML = `${message}`;
+        //     messageContainer.classList.add('message-host');
+        //     messageContainer.appendChild(messageSender);
+        //     messageSender.innerHTML = `@${hostUsername}`;
+        //     messageContainer.appendChild(messageTextContainer);
+        //     messageTextContainer.innerHTML = `${message}`;
 
-            chatContainer.appendChild(messageContainer);
-            chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
-        });
+        //     chatContainer.appendChild(messageContainer);
+        //     chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
+        // });
     
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
