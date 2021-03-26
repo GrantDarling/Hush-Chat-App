@@ -28,12 +28,10 @@ const Room = () => {
 
     useEffect(() => {
         if(roomCreated) {
-            socket.emit('create', roomName);
+            socket.emit('create room', roomName);
+            socket.emit('join room', roomName);
 
-            setRoom({
-                ...room,
-                roomCreated: false
-            });
+            setRoom({ ...room, roomCreated: false });
         }
 
     },[roomName, roomCreated, room])
