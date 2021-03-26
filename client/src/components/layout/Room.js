@@ -41,22 +41,22 @@ const Room = ({ socket }) => {
             toggleModal();
         }
 
-        // socket.on('chat message', (message) => {
-        //     console.log(message);
-        //     let chatContainer = document.getElementById('chat');
-        //     let messageContainer = document.createElement('div');
-        //     let messageSender = document.createElement('h3');
-        //     let messageTextContainer = document.createElement('p');
+        socket.on('chat message', (message) => {
+            console.log(message);
+            let chatContainer = document.getElementById('chat');
+            let messageContainer = document.createElement('div');
+            let messageSender = document.createElement('h3');
+            let messageTextContainer = document.createElement('p');
 
-        //     messageContainer.classList.add('message-host');
-        //     messageContainer.appendChild(messageSender);
-        //     messageSender.innerHTML = `@${hostUsername}`;
-        //     messageContainer.appendChild(messageTextContainer);
-        //     messageTextContainer.innerHTML = `${message}`;
+            messageContainer.classList.add('message-host');
+            messageContainer.appendChild(messageSender);
+            messageSender.innerHTML = `@${hostUsername}`;
+            messageContainer.appendChild(messageTextContainer);
+            messageTextContainer.innerHTML = `${message}`;
 
-        //     chatContainer.appendChild(messageContainer);
-        //     chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
-        // });
+            chatContainer.appendChild(messageContainer);
+            chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
+        });
     
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])

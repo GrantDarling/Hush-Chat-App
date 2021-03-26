@@ -11,11 +11,11 @@ const Lobby = ({socket}) => {
   useEffect(() => {
 
     // Get list of available rooms
-    // socket.on('get rooms', (activeRooms) => {
-    //   console.log(activeRooms);
-    //   setLobby(activeRooms)
-    // });
-    // socket.emit('get rooms');
+    socket.on('get rooms', (activeRooms) => {
+      console.log(activeRooms);
+      setLobby(activeRooms)
+    });
+    socket.emit('get rooms');
 
   }, []);
   
