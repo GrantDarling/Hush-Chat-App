@@ -4,6 +4,9 @@ import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal'
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:5000');
 
 const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();

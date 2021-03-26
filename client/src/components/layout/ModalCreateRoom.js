@@ -1,10 +1,19 @@
 import React from 'react';
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:5000');
 
 const ModalCreateRoom = ({ roomName, hostUsername, allowVideo, onChange, toggleModal }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
     toggleModal();
+
+    socket.emit('create', 'room1');
+
+    socket.on("consoleSomethingTo", (room, id) => {
+      console.log(`${id} connected to ${room}`);
+    });
   }
 
   return (
