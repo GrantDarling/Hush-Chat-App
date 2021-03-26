@@ -26,6 +26,10 @@ io.on("connection", (socket) => {
   socket.on('chat message', (message, room) => {
     io.sockets.in(room).emit('chat message', message, id);
   });
+
+  socket.on('get rooms', () => {
+    io.emit('get rooms', activeRooms);
+  });
 });
 
 // Define routes

@@ -11,6 +11,11 @@ const Room = () => {
     const [isOpen, toggleModal] = ModalSwitch();
     const roomExists = useRef(false);
 
+    const willMount = useRef(true);
+    if (willMount.current) {}
+    willMount.current = false
+
+
     const [room, setRoom] = useState({
         roomName: '',
         hostUsername: '',
