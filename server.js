@@ -3,7 +3,8 @@ const app = express();
 const server = require('http').Server(app);
 
 const io = require("socket.io")(server, { cors: 
-  { origin: 'http://localhost:3000', methods: ['GET', 'POST'] }});
+  { origin: 'http://localhost:3000', methods: ['GET', 'POST'] }
+});
 
 // Init socket.io
 let activeRooms = [];
@@ -12,7 +13,7 @@ io.on("connection", (socket) => {
   const {id} = socket.client;
   console.log(`${id} connected...`);
 
-  socket.on('create', function(room) {
+  socket.on('create', (room) => {
     socket.join(room);
 
     if(!activeRooms.includes(room)) {
@@ -20,11 +21,10 @@ io.on("connection", (socket) => {
     }
 
     console.log(`Active rooms: ${activeRooms}`);
-    io.to(room).emit('consoleSomethingTo', room, id);
   });
 
-  socket.on('sendMessage', function() {
-    io.to(room).emit('consoleSomethingTo', room, id);
+  socket.on('chat message', (message, room) => {
+    io.sockets.in(room).emit('chat message', message, id);
   });
 });
 

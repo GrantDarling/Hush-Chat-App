@@ -5,7 +5,6 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal'
 import io from 'socket.io-client';
-
 const socket = io.connect('http://localhost:5000');
 
 const Room = () => {
@@ -16,17 +15,50 @@ const Room = () => {
         roomName: '',
         hostUsername: '',
         allowVideo: '',
-        chatMessage: ''
+        chatMessage: '',
+        roomCreated: false
     })
         
-    const { roomName, hostUsername, allowVideo, chatMessage } = room;
+    const { roomName, hostUsername, allowVideo, chatMessage, roomCreated } = room;
+
+    useEffect(() => {
+        if(roomCreated) {
+            socket.emit('create', roomName);
+
+            setRoom({
+                ...room,
+                roomCreated: false
+            });
+        }
+
+    },[roomName, roomCreated, room])
 
     useEffect(() => {
         if(!roomExists.current) {
             roomExists.current = true;
             toggleModal();
         }
-    },[toggleModal, roomExists])
+
+        socket.on('chat message', (message) => {
+            console.log(message);
+            let chatContainer = document.getElementById('chat');
+            let messageContainer = document.createElement('div');
+            let messageSender = document.createElement('h3');
+            let messageTextContainer = document.createElement('p');
+
+            messageContainer.classList.add('message-host');
+            messageContainer.appendChild(messageSender);
+            messageSender.innerHTML = `@${hostUsername}`;
+            messageContainer.appendChild(messageTextContainer);
+            messageTextContainer.innerHTML = `${message}`;
+
+            chatContainer.appendChild(messageContainer);
+            chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
+        });
+    
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
+
 
     const onChange = (e) => {
         setRoom({
@@ -37,20 +69,8 @@ const Room = () => {
 
     const sendMessage = (e) => {
         e.preventDefault();
-
-        const chatContainer = document.getElementById('chat');
-        const messageContainer = document.createElement('div');
-        const messageSender = document.createElement('h3');
-        const messageTextContainer = document.createElement('p');
         
-        messageContainer.classList.add('message-host');
-        messageContainer.appendChild(messageSender);
-        messageSender.innerHTML = `@${hostUsername}`;
-        messageContainer.appendChild(messageTextContainer);
-        messageTextContainer.innerHTML = `${chatMessage}`;
-
-        chatContainer.appendChild(messageContainer);
-        chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
+        socket.emit('chat message', chatMessage, roomName);
 
         setRoom({
             ...room,
@@ -69,24 +89,12 @@ const Room = () => {
                             <li>@{hostUsername} has entered the chat.</li>
                             <li>@LukeSkywalker has entered the chat.</li>
                         </ul>
-                        <div className='message-host'>
-                            <h3>@{hostUsername}</h3>
-                            <p>Hey man!</p>
-                        </div>
                         <div className='message-guest'>
                             <h3>@lukeskywalker</h3>
                             <p>Hey man!</p>
                         </div>
                         <div className='message-guest'>
                             <h3>@lukeskywalker</h3>
-                            <p>This is an example of a super 
-                                Long message that I hope isn’t 
-                                Too long but it needed to be 
-                                done !
-                            </p>
-                        </div>
-                        <div className='message-host'>
-                            <h3>@{hostUsername}</h3>
                             <p>This is an example of a super 
                                 Long message that I hope isn’t 
                                 Too long but it needed to be 
@@ -114,7 +122,7 @@ const Room = () => {
                 </div>
 
                 <Modal isOpen={isOpen} toggleModal={toggleModal} >
-                    <CreateRoom roomName={roomName} hostUsername={hostUsername} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} onChange={onChange} />
+                    <CreateRoom roomName={roomName} hostUsername={hostUsername} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} onChange={onChange} socket={socket} roomCreated={roomCreated} />
                 </Modal>
 
             </div>
