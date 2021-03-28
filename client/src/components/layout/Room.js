@@ -14,20 +14,24 @@ const Room = ({ state, socket }) => {
     const [room, setRoom] = useState({
         roomName: '',
         hostUsername: '',
+        guestUserName: '',
         allowVideo: '',
+        allowGuestVideo: '',
         chatMessage: '',
         roomCreated: false
     })
         
-    const { roomName, hostUsername, allowVideo, chatMessage, roomCreated } = room;
+    const { roomName, hostUsername, allowVideo, chatMessage, roomCreated, guestUserName, allowGuestVideo } = room;
 
     useEffect(() => {
         if(roomCreated) {
-            socket.emit('create room', roomName);
+            socket.emit('create room', roomName, hostUsername);
             socket.emit('leave room', roomName);
             socket.emit('join room', roomName);
 
-            setRoom({ ...room, roomCreated: false });
+            setRoom({ ...room, 
+                roomCreated: false,
+                guestUserName:  hostUsername});
         }
     },[roomName, roomCreated, room, socket])
 
@@ -37,7 +41,10 @@ const Room = ({ state, socket }) => {
                 toggleModal();
             }
            if (state.joinRoomName) {
-                setRoom({ ...room, roomName: state.joinRoomName })
+                setRoom({ ...room, roomName: state.joinRoomName,
+                guestUserName: state.guestUserName,
+                allowGuestVideo: state.allowGuestVideo,
+                hostUsername: state.guestUserName})
                 socket.emit('leave room', roomName);
                 socket.emit('join room', state.joinRoomName);
             }
@@ -64,7 +71,7 @@ const Room = ({ state, socket }) => {
     const sendMessage = (e) => {
         e.preventDefault();
         
-        socket.emit('chat message', chatMessage, roomName);
+        socket.emit('chat message', chatMessage, roomName, guestUserName);
 
         let chatContainer = document.getElementById('chat');
         let messageContainer = document.createElement('div');
@@ -121,8 +128,8 @@ const Room = ({ state, socket }) => {
                         <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!allowVideo ? '' : 'display-none' } />
                     </div>
                     <div className='guest'>
-                        <h4 className='username' >@LukeSkywalker</h4>
-                        <img src={GuestPlaceholder} alt="Guest Placeholder"/>
+                        <h4 className='username' >@{guestUserName}</h4>
+                        <img src={GuestPlaceholder} alt="Guest Placeholder" className={ !!allowGuestVideo ? '' : 'display-none' }/>
                     </div>
 
                     {/* <video className='host' />

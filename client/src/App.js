@@ -11,7 +11,7 @@ let App = () => {
 
 useEffect(() => {
   console.log('opened!');
-            socket.on('chat message', (message) => {
+            socket.on('chat message', (message, guest) => {
                 console.log(message);
                 let chatContainer = document.getElementById('chat');
                 let messageContainer = document.createElement('div');
@@ -22,7 +22,7 @@ useEffect(() => {
 
                 messageContainer.classList.add('message-guest');
                 messageContainer.appendChild(messageSender);
-                messageSender.innerHTML = `@placeholder`;
+                messageSender.innerHTML = `@${guest}`;
                 messageContainer.appendChild(messageTextContainer);
                 messageTextContainer.innerHTML = `${message}`;
 

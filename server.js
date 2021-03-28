@@ -12,9 +12,12 @@ io.on("connection", (socket) => {
   console.log(`${id} connected...`);
 
   // Create a new room instance
-  socket.on('create room', (room) => {
+  socket.on('create room', (room, host) => {
     if(!activeRooms.includes(room)) {
-      activeRooms.push(room);
+      x = [];
+      x.push(room);
+      x.push(host);
+      activeRooms.push(x);
       console.log(`${activeRooms}`)
     }
   });
@@ -46,9 +49,9 @@ io.on("connection", (socket) => {
   });
 
   // Send chat within an existing room instance
-  socket.on('chat message', (message, room) => {
-    socket.to(room).emit('chat message', message, id);
-    console.log(message + ' ' + id)
+  socket.on('chat message', (message, room, guest) => {
+    socket.to(room).emit('chat message', message, guest);
+    console.log(message + ' ' + id )
   });
 
   // Get a list of available rooms

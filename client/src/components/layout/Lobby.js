@@ -35,8 +35,8 @@ const Lobby = ({socket}) => {
           (
             <div key="{room}" className='chatroom'>
               <div className='details-container'>
-                <h3><small>Room Name: </small>{room}</h3>
-                <h3><small>Host: </small>Kyle88</h3>
+                <h3><small>Room Name: </small>{room[0]}</h3>
+                <h3><small>Host: </small>{room[1]}</h3>
                 <h4>Capacity: 1/2</h4>
               </div>
               <button className='join' onClick={() => onClick(room)}>JOIN</button>
