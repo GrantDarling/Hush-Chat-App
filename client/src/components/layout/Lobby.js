@@ -16,9 +16,9 @@ const Lobby = ({socket}) => {
   }
 
   useEffect(() => {
-    socket.on('get rooms', (activeRooms) => {
-      console.log(activeRooms);
-      setLobby(activeRooms)
+    socket.on('get rooms', (rooms) => {
+      console.log(rooms);
+      setLobby(rooms)
       setUsers()
     });
     socket.emit('leave all rooms');
@@ -33,11 +33,11 @@ const Lobby = ({socket}) => {
 
         {lobby.length > 0 ? lobby.map((room) => 
           (
-            <div key="{room}" className={room[2] < 2 ? 'chatroom' : 'chatroom--locked'}>
+            <div key="{room}" className={room.users.length < 2 ? 'chatroom' : 'chatroom--locked'}>
               <div className='details-container'>
-                <h3><small>Room Name: </small>{room[0]}</h3>
-                <h3><small>Host: </small>{room[1]}</h3>
-                { room[2] < 2 ? <h4>Capacity: {room[2]}/2</h4> : <div className='join'>FULL{room[2]}</div> }
+                <h3><small>Room Name: </small>{room.name}</h3>
+                <h3><small>Host: </small>{room.host}</h3>
+                { room.users.length < 2 ? <h4>Capacity: {room.users.length}/2</h4> : <div className='join'>FULL{room.users.length}</div> }
               </div>
               <button className='join' onClick={() => onClick(room)}>JOIN</button>
             </div>

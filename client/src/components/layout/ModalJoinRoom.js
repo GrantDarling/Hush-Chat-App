@@ -64,8 +64,8 @@ const ModalJoinRoom = ({ room, lobby }) => {
       </form> 
       { redirect ? <Redirect exact to={{
       pathname:'/room',
-      state: { joinRoomName: room[0],
-                host: room[1],
+      state: { joinRoomName: room.name,
+                host: room.host,
                 rooms: lobby,
               guestUserName: guestUserName,
               allowGuestVideo: allowGuestVideo }  

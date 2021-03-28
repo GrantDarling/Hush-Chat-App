@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
@@ -5,116 +6,69 @@ const io = require("socket.io")(server, { cors:
   { origin: 'http://localhost:3000', methods: ['GET', 'POST'] }
 });
 
-let activeRooms = [];
-
-let rooms = [{
-  name: 'test room name',
-  host: 'test host',
-  users: ['fdasfdsafdsa']
-}];
+// socket.io functions
+let rooms = [];
 
 io.on("connection", (socket) => {
   const {id} = socket.client;
   console.log(`${id} connected...`);
 
-  // Create a new room instance
-  socket.on('create room', (currentRoom, currentHost) => {
-    if(!activeRooms.includes(currentRoom)) {
-      x = [];
-      x.push(currentRoom);
-      x.push(currentRoom);
-      activeRooms.push(x);
-    }
-
-    let roomExists = false;
-
-    for (room in rooms) {
-      if(rooms[room].name.includes[currentRoom]) { roomExists = true; }
-      
-      console.log('roomExists ' + roomExists);
-    }
-
-    if(!roomExists) {
-      let addRoom = {
-        name:  currentRoom,
-        host: currentHost,
-        users: [id]
-      };
-
-      rooms.push(addRoom);
-    }
-
-    console.log(rooms);
+  socket.on('disconnect', function() {
+    console.log(`${id} disconnected...`);
   });
 
-var activeUsers;
-var activeUsers2;
+  // Create a new room instance
+  socket.on('create room', (createdRoom, currentHost) => {
+    let listOfRooms = [];
+
+    for (room of rooms) { 
+      listOfRooms.push(room.name) 
+    };
+
+    if(!listOfRooms.includes(createdRoom)) {
+        let addRoom = {
+          name: createdRoom,
+          host: currentHost,
+          users: []
+        };
+       rooms.push(addRoom);
+    }
+  });
 
   // Join an existing room instance
-  socket.on('join room', (room) => {
-      socket.join(room);
-      console.log('join successful: ' + room)
-
-      for (const room in activeRooms) {
-        activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
-        activeUsers2 = Array.from(activeUsers);
-        console.log(activeUsers2);
-        activeRooms[room][2] = activeUsers2.length;
-      }
-      
-      console.log(activeRooms);
-  });
-
-  // Leave an existing room instance
-  socket.on('leave room', (room) => {
-    socket.leave(room);
-
-      for (const room in activeRooms) {
-        activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
-        console.log(activeUsers);
-        //activeUsers2 = Array.from(activeUsers);
-        //console.log(activeUsers2);
-        //activeRooms[room][1] = activeUsers2.length;
-      }
-
-    console.log('leave(all) successful: ' + room)
+  socket.on('join room', (joinedRoom) => {
+    socket.join(joinedRoom);
+    
+    for (room of rooms) { 
+      if(room.name == joinedRoom && !room.users.includes(id)) { 
+        room.users.push(id); 
+        console.log(`${id} has been added to ${room.name}`);
+      };
+    };
   });
 
   // Leave an existing room instance
   socket.on('leave all rooms', () => {
-  
-      for (const room in activeRooms) {
-        activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
-        console.log('XXXX ' + activeRooms[room] + 'is ' + Array.from(activeUsers));
-        if(Array.from(activeUsers).includes(id)) {
-          Array.from(activeUsers).pop(id);
-        }
-        // activeUsers2 = Array.from(activeUsers);
-        // console.log(activeUsers2);
-        // activeRooms[room][2] = activeUsers2.length;
-      }
 
-    activeRooms.forEach((room) => {
-          socket.leave(room);
-          console.log('leave successful: ' + room)
-    })
+    for (room of rooms) { 
+      if(room.users.includes(id)) { 
+        room.users.pop(id); 
+      };
+      
+      socket.leave(room);
+    };
   });
 
   // Send chat within an existing room instance
   socket.on('chat message', (message, room, guest) => {
     socket.to(room).emit('chat message', message, guest);
-    console.log(message + ' ' + id )
+    console.log(message + ' ' + id );
   });
 
   // Get a list of available rooms
   socket.on('get rooms', () => {
-    io.emit('get rooms', activeRooms);
+    io.emit('get rooms', rooms);
   });
-
-  socket.on('disconnect', function() {
-    console.log(`${id} disconnected...`);
-  });
-
 });
 
 // Define routes & start server

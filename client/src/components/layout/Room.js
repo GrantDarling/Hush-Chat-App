@@ -26,7 +26,6 @@ const Room = ({ state, socket }) => {
     useEffect(() => {
         if(roomCreated) {
             socket.emit('create room', roomName, hostUsername);
-            socket.emit('leave room', roomName);
             socket.emit('join room', roomName);
 
             setRoom({ ...room, 
@@ -45,8 +44,8 @@ const Room = ({ state, socket }) => {
                 guestUserName: state.guestUserName,
                 allowGuestVideo: state.allowGuestVideo,
                 hostUsername: state.guestUserName})
-                socket.emit('leave room', roomName);
                 socket.emit('join room', state.joinRoomName);
+                alert('this sent');
             }
         }
 
