@@ -21,29 +21,57 @@ io.on("connection", (socket) => {
       console.log(`${activeRooms}`)
     }
   });
-
+var activeUsers;
+var activeUsers2;
   // Join an existing room instance
   socket.on('join room', (room) => {
       socket.join(room);
       console.log('join successful: ' + room)
-      var fuckingTest = io.sockets.adapter.rooms.get('x');
-      // console.log(fuckingTest);
+
+      for (const room in activeRooms) {
+        activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
+        activeUsers2 = Array.from(activeUsers);
+        console.log(activeUsers2);
+        activeRooms[room][2] = activeUsers2.length;
+      }
+      
+      console.log(activeRooms);
   });
 
-  console.log(io.sockets.adapter.rooms['x']);
   // Leave an existing room instance
   socket.on('leave room', (room) => {
     socket.leave(room);
+
+      for (const room in activeRooms) {
+        activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
+        console.log(activeUsers);
+        //activeUsers2 = Array.from(activeUsers);
+        //console.log(activeUsers2);
+        //activeRooms[room][1] = activeUsers2.length;
+      }
+
     console.log('leave(all) successful: ' + room)
   });
 
   // Leave an existing room instance
   socket.on('leave all rooms', () => {
-        
+  
+      for (const room in activeRooms) {
+        activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
+        console.log('XXXX ' + activeRooms[room] + 'is ' + Array.from(activeUsers));
+        console.log('my id is: ' + id);
+        if(Array.from(activeUsers).includes(id)) {
+          Array.from(activeUsers).pop(id);
+          console.log('popped: ' + id);
+        }
+        console.log('YYYY ' + activeRooms[room] + 'is ' + Array.from(activeUsers));
+        // activeUsers2 = Array.from(activeUsers);
+        // console.log(activeUsers2);
+        // activeRooms[room][2] = activeUsers2.length;
+      }
 
     activeRooms.forEach((room) => {
           socket.leave(room);
-          socket.removeAllListeners(room);
           console.log('leave successful: ' + room)
     })
   });

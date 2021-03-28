@@ -7,6 +7,7 @@ const Lobby = ({socket}) => {
   const [isOpen, toggleModal] = ModalSwitch(); // !!! potentially unused
   const [lobby, setLobby] = useState([]);
   const [room, setRoom] = useState('');
+  const [users, setUsers] = useState(0);
 
   const onClick = (currRoom) => {
     console.log('current room is ' + currRoom)
@@ -18,11 +19,10 @@ const Lobby = ({socket}) => {
     socket.on('get rooms', (activeRooms) => {
       console.log(activeRooms);
       setLobby(activeRooms)
+      setUsers()
     });
-
-    socket.emit('get rooms');
-
     socket.emit('leave all rooms');
+    socket.emit('get rooms');
 
     return () => { setLobby([]) }; 
   }, [socket]);
@@ -33,11 +33,11 @@ const Lobby = ({socket}) => {
 
         {lobby.length > 0 ? lobby.map((room) => 
           (
-            <div key="{room}" className='chatroom'>
+            <div key="{room}" className={room[2] < 2 ? 'chatroom' : 'chatroom--locked'}>
               <div className='details-container'>
                 <h3><small>Room Name: </small>{room[0]}</h3>
                 <h3><small>Host: </small>{room[1]}</h3>
-                <h4>Capacity: 1/2</h4>
+                { room[2] < 2 ? <h4>Capacity: {room[2]}/2</h4> : <div className='join'>FULL{room[2]}</div> }
               </div>
               <button className='join' onClick={() => onClick(room)}>JOIN</button>
             </div>
