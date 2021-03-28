@@ -33,7 +33,7 @@ const Lobby = ({socket}) => {
 
         {lobby.length > 0 ? lobby.map((room) => 
           (
-            <div key="{room}" className={room.users.length < 2 ? 'chatroom' : 'chatroom--locked'}>
+            <div key={room.name} className={room.users.length < 2 ? 'chatroom' : 'chatroom--locked'}>
               <div className='details-container'>
                 <h3><small>Room Name: </small>{room.name}</h3>
                 <h3><small>Host: </small>{room.host}</h3>
