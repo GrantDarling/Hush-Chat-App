@@ -5,6 +5,7 @@
 .Room {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 
     &-name {
         width: 100%;
@@ -27,6 +28,9 @@
 // Input Controller 
 .input-controller {
     height: 50px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 
     input,
     button {
@@ -78,6 +82,7 @@
 }
 
 .chat {
+    position: relative;
     border-right: solid 1px $white-swiss;
     width: 70%;
 
@@ -85,7 +90,7 @@
         height: 82%;
         padding: 20px;
         overflow-y: scroll;
-        // box-shadow: inset 0 0 10px black;
+        margin-bottom: 50px;
 
         ul {
             padding: 0;

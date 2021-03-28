@@ -104,18 +104,6 @@ const Room = ({ state, socket }) => {
                             <li>@{hostUsername} has entered the chat.</li>
                             <li>@LukeSkywalker has entered the chat.</li>
                         </ul>
-                        <div className='message-guest'>
-                            <h3>@lukeskywalker</h3>
-                            <p>Hey man!</p>
-                        </div>
-                        <div className='message-guest'>
-                            <h3>@lukeskywalker</h3>
-                            <p>This is an example of a super 
-                                Long message that I hope isn’t 
-                                Too long but it needed to be 
-                                done !
-                            </p>
-                        </div>
                     </div>
                     <form className='input-controller' onSubmit={sendMessage}>
                         <input type="text" id='message-input' name='chatMessage' value={chatMessage} onChange={onChange} />

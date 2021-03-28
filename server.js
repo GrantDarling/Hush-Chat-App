@@ -7,22 +7,49 @@ const io = require("socket.io")(server, { cors:
 
 let activeRooms = [];
 
+let rooms = [{
+  name: 'test room name',
+  host: 'test host',
+  users: ['fdasfdsafdsa']
+}];
+
 io.on("connection", (socket) => {
   const {id} = socket.client;
   console.log(`${id} connected...`);
 
   // Create a new room instance
-  socket.on('create room', (room, host) => {
-    if(!activeRooms.includes(room)) {
+  socket.on('create room', (currentRoom, currentHost) => {
+    if(!activeRooms.includes(currentRoom)) {
       x = [];
-      x.push(room);
-      x.push(host);
+      x.push(currentRoom);
+      x.push(currentRoom);
       activeRooms.push(x);
-      console.log(`${activeRooms}`)
     }
+
+    let roomExists = false;
+
+    for (room in rooms) {
+      if(rooms[room].name.includes[currentRoom]) { roomExists = true; }
+      
+      console.log('roomExists ' + roomExists);
+    }
+
+    if(!roomExists) {
+      let addRoom = {
+        name:  currentRoom,
+        host: currentHost,
+        users: [id]
+      };
+
+      rooms.push(addRoom);
+    }
+
+    console.log(rooms);
   });
+
 var activeUsers;
 var activeUsers2;
+
   // Join an existing room instance
   socket.on('join room', (room) => {
       socket.join(room);
@@ -59,12 +86,9 @@ var activeUsers2;
       for (const room in activeRooms) {
         activeUsers = io.sockets.adapter.rooms.get(activeRooms[room][0]);
         console.log('XXXX ' + activeRooms[room] + 'is ' + Array.from(activeUsers));
-        console.log('my id is: ' + id);
         if(Array.from(activeUsers).includes(id)) {
           Array.from(activeUsers).pop(id);
-          console.log('popped: ' + id);
         }
-        console.log('YYYY ' + activeRooms[room] + 'is ' + Array.from(activeUsers));
         // activeUsers2 = Array.from(activeUsers);
         // console.log(activeUsers2);
         // activeRooms[room][2] = activeUsers2.length;
