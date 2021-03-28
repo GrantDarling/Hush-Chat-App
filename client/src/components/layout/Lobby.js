@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import JoinRoom from './ModalJoinRoom';
 import ModalSwitch from '../logical/Modal';
@@ -7,17 +6,26 @@ import ModalSwitch from '../logical/Modal';
 const Lobby = ({socket}) => {
   const [isOpen, toggleModal] = ModalSwitch(); // !!! potentially unused
   const [lobby, setLobby] = useState([]);
+  const [room, setRoom] = useState('');
+
+  const onClick = (currRoom) => {
+    console.log('current room is ' + currRoom)
+    setRoom(currRoom);
+    toggleModal();
+  }
 
   useEffect(() => {
-
-    // Get list of available rooms
     socket.on('get rooms', (activeRooms) => {
       console.log(activeRooms);
       setLobby(activeRooms)
     });
+
     socket.emit('get rooms');
 
-  }, []);
+    socket.emit('leave all rooms');
+
+    return () => { setLobby([]) }; 
+  }, [socket]);
   
   return (
     <section className='Lobby'>
@@ -25,32 +33,26 @@ const Lobby = ({socket}) => {
 
         {lobby.length > 0 ? lobby.map((room) => 
           (
-            <div className='chatroom'>
+            <div key="{room}" className='chatroom'>
               <div className='details-container'>
                 <h3><small>Room Name: </small>{room}</h3>
                 <h3><small>Host: </small>Kyle88</h3>
                 <h4>Capacity: 1/2</h4>
               </div>
-              <NavLink exact to='/room' className='join' onClick={toggleModal}>JOIN</NavLink>
+              <button className='join' onClick={() => onClick(room)}>JOIN</button>
             </div>
           )) : (
-            <div class="chatrooms--none">
+            <div className="chatrooms--none">
               <h1>Currently no chatrooms available.</h1>
             </div> 
           )
         }
 
-        <Modal isOpen={isOpen} toggleModal={toggleModal}> {/* !!! potentially unused */}
-          <JoinRoom />
+        <Modal isOpen={isOpen} toggleModal={toggleModal} > {/* !!! potentially unused */}
+          <JoinRoom room={room} lobby={lobby} />
         </Modal>
 
       </div>
-    </section>
-    )
-};
-
-export default Lobby;
-
 
 
        {/* No Chatrooms */}
@@ -89,3 +91,8 @@ export default Lobby;
         </div> 
       </div> 
   ); */}
+    </section>
+    )
+};
+
+export default Lobby;

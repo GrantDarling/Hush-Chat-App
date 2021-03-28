@@ -5,16 +5,12 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal'
 
-const Room = ({ socket }) => {
-    console.log(socket);
+const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
     const roomExists = useRef(false);
+    const switcher = useRef(true);
 
-    const willMount = useRef(true);
-    if (willMount.current) {}
-    willMount.current = false
-
-
+    // Initialize room state
     const [room, setRoom] = useState({
         roomName: '',
         hostUsername: '',
@@ -28,35 +24,31 @@ const Room = ({ socket }) => {
     useEffect(() => {
         if(roomCreated) {
             socket.emit('create room', roomName);
+            socket.emit('leave room', roomName);
             socket.emit('join room', roomName);
 
             setRoom({ ...room, roomCreated: false });
         }
-
-    },[roomName, roomCreated, room])
+    },[roomName, roomCreated, room, socket])
 
     useEffect(() => {
-        if(!roomExists.current) {
-            roomExists.current = true;
-            toggleModal();
+        if(state) {
+            if (!!state.newRoom) {
+                toggleModal();
+            }
+           if (state.joinRoomName) {
+                setRoom({ ...room, roomName: state.joinRoomName })
+                socket.emit('leave room', roomName);
+                socket.emit('join room', state.joinRoomName);
+            }
         }
 
-        socket.on('chat message', (message) => {
-            console.log(message);
-            let chatContainer = document.getElementById('chat');
-            let messageContainer = document.createElement('div');
-            let messageSender = document.createElement('h3');
-            let messageTextContainer = document.createElement('p');
+        if(!roomExists.current) {
+            console.log('opened!');
 
-            messageContainer.classList.add('message-host');
-            messageContainer.appendChild(messageSender);
-            messageSender.innerHTML = `@${hostUsername}`;
-            messageContainer.appendChild(messageTextContainer);
-            messageTextContainer.innerHTML = `${message}`;
+            roomExists.current = true;
+        }
 
-            chatContainer.appendChild(messageContainer);
-            chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
-        });
     
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
@@ -73,6 +65,20 @@ const Room = ({ socket }) => {
         e.preventDefault();
         
         socket.emit('chat message', chatMessage, roomName);
+
+        let chatContainer = document.getElementById('chat');
+        let messageContainer = document.createElement('div');
+        let messageSender = document.createElement('h3');
+        let messageTextContainer = document.createElement('p');
+
+        messageContainer.classList.add('message-host');
+        messageContainer.appendChild(messageSender);
+        messageSender.innerHTML = `@${hostUsername}`;
+        messageContainer.appendChild(messageTextContainer);
+        messageTextContainer.innerHTML = `${chatMessage}`;
+
+        chatContainer.appendChild(messageContainer);
+        chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
 
         setRoom({
             ...room,
