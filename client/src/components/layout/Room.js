@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -7,8 +7,6 @@ import ModalSwitch from '../logical/Modal'
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
-    const roomExists = useRef(false);
-    const switcher = useRef(true);
 
     // Initialize room state
     const [room, setRoom] = useState({
@@ -32,7 +30,7 @@ const Room = ({ state, socket }) => {
                 roomCreated: false,
                 guestUserName:  hostUsername});
         }
-    },[roomName, roomCreated, room, socket])
+    },[roomName, hostUsername, roomCreated, room, socket])
 
     useEffect(() => {
         if(state) {
@@ -47,12 +45,6 @@ const Room = ({ state, socket }) => {
                 socket.emit('join room', state.joinRoomName);
                 alert('this sent');
             }
-        }
-
-        if(!roomExists.current) {
-            console.log('opened!');
-
-            roomExists.current = true;
         }
 
     

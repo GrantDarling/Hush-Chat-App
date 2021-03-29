@@ -3,9 +3,8 @@
 *************/
 
 .Lobby {
-    @include flex-position(flex-start, center);
+    @include flex-position(center, center);
     height: 100%;
-    margin-top: 10%;
 }
 
 .chatrooms, .chatroom,
