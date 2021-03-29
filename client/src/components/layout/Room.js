@@ -1,43 +1,66 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Prompt, isPrompt } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
-import ModalSwitch from '../logical/Modal'
+import ModalSwitch from '../logical/Modal';
+
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
-
     // Initialize room state
     const [room, setRoom] = useState({
         name: '',
         host: '',
         other: '',
-        allowVideo: 'true',
+        allowVideo: '',
         allowGuestVideo: '',
         chatMessage: '',
-        roomCreated: false
+        roomCreated: false,
+        prevUrl: window.location.href,
+        hostCreatedMe: true
     })
+
+    const unMountme = () => {
+        console.log('unmounted!!!' + name);
+        socket.emit('close room', name);
+    }
         
-    const { name, host, allowVideo, chatMessage, roomCreated, other, allowGuestVideo } = room;
+    const { name, host, allowVideo, chatMessage, roomCreated, other, allowGuestVideo, prevUrl, hostCreatedMe } = room;
 
     useEffect(() => {
-        
         if(roomCreated) {
-            socket.emit('create room', name, host);
+
+            socket.emit('create room', name, host, allowVideo);
             socket.emit('join room', name);
             setRoom({ 
                 ...room, 
                 roomCreated: false,
                 host: host,
-                allowVideo: allowVideo
+                allowVideo: allowVideo,
+                prevUrl: window.location.href,
+                hostCreatedMe: true
             });
         }
 
         return () => {}; 
     },[name, host, roomCreated, room, socket, allowVideo])
 
+
     useEffect(() => {
+                socket.on('host left', (id) => {
+                    console.log('host ' + id + 'left')
+                    console.log('room has been removed');
+                    setRoom({
+                        ...room,
+                        name: state.joinRoomName,
+                        other: state.host,
+                        allowVideo: state.allowOtherVideo,
+                        allowGuestVideo: state.allowVideo,
+                        host: state.other
+                    })
+                });
+
        console.log('allowVideo: ' + allowVideo);
         if(state) {
             if (!!state.newRoom) {
@@ -49,9 +72,11 @@ const Room = ({ state, socket }) => {
                 name: state.joinRoomName,
                 other: state.host,
                 allowVideo: state.allowOtherVideo,
-                allowGuestVideo: allowVideo,
+                allowGuestVideo: state.allowVideo,
                 host: state.other,
+                hostCreatedMe: state.hostCreatedMe
             });
+            console.log('but im set to: ' + hostCreatedMe)
             socket.emit('refesh clients', state.joinRoomName, state, allowVideo);
             socket.emit('join room', state.joinRoomName);
             }
@@ -62,14 +87,30 @@ const Room = ({ state, socket }) => {
                 ...room, 
                 name: state.joinRoomName,
                 other: state.other,
-                allowVideo: roomStateVideo,
+                allowVideo: state.allowVideo,
                 allowGuestVideo: state.allowOtherVideo,
-                host: state.host
+                host: state.host,
+                hostDidntCreatedMe: true
             });
         })
-         return () => {}; 
+
+        return (() => {});
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[]);
+
+    useEffect(() => {
+        console.log('PrevIRL: ' + prevUrl)
+            console.log('hostCreatedMe ' + hostCreatedMe);
+        return function cleanup() {
+            let newUrl = window.location.href;
+            if (prevUrl !== newUrl && hostCreatedMe) {
+                unMountme();
+                
+            }
+
+
+        }
+    }, [window.location.href, name, hostCreatedMe]);
 
 
     const onChange = (e) => {
@@ -106,6 +147,7 @@ const Room = ({ state, socket }) => {
 
     return (
         <section className='Room'>
+
             <h3 className='Room-name'>Chatroom: {name}</h3>
             <div className='chatbox'> 
                 <div className='chat'>

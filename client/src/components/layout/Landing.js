@@ -4,7 +4,7 @@ const Landing = () => {
   return (
     <section className='Landing'>
       <h1>Hush.</h1>
-      <p>Chat | Collab | Connect</p>
+      <p>Video | Voice | Messenger</p>
     </section>
   );
 };

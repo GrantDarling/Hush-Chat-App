@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
   });
 
   // Create a new room instance
-  socket.on('create room', (createdRoom, currentHost) => {
+  socket.on('create room', (createdRoom, currentHost, allowHostVideo) => {
     let listOfRooms = [];
 
     for (room of rooms) { 
@@ -27,7 +27,10 @@ io.on("connection", (socket) => {
     if(!listOfRooms.includes(createdRoom)) {
         let addRoom = {
           name: createdRoom,
-          host: currentHost,
+          host: {
+            name: currentHost,
+            allowVideo: allowHostVideo
+          },
           users: []
         };
        rooms.push(addRoom);
@@ -37,12 +40,14 @@ io.on("connection", (socket) => {
   // Join an existing room instance
   socket.on('join room', (joinedRoom) => {
     socket.join(joinedRoom);
+    socket.to(joinedRoom).emit('user joined', id);
     
     for (room of rooms) { 
       if(room.name == joinedRoom && !room.users.includes(id)) { 
         room.users.push(id); 
       };
     };
+           console.log(rooms)
   });
 
   // Leave an existing room instance
@@ -73,6 +78,25 @@ io.on("connection", (socket) => {
   socket.on('get rooms', () => {
     io.emit('get rooms', rooms);
   });
+
+  // Close current room
+  socket.on('close room', (currentRoom) => {
+    const newRooms = rooms.filter((room) => room.name !== currentRoom);
+    socket.to(currentRoom).emit('host left', id);
+
+    for (room of rooms) {
+      console.log('this is the room ' + room.name )
+      if (room.name === currentRoom) {
+        //rooms.pop(room);
+        //console.log('just popped' + room);
+      }
+      console.log('this is the current room ' + currentRoom )
+    };
+
+    rooms = newRooms
+    console.log(rooms)
+  });
+
 });
 
 // Define routes & start server
