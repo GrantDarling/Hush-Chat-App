@@ -4,18 +4,17 @@ import JoinRoom from './ModalJoinRoom';
 import ModalSwitch from '../logical/Modal';
 
 const Lobby = ({socket}) => {
-  const [isOpen, toggleModal] = ModalSwitch(); // !!! potentially unused
+  const [isOpen, toggleModal] = ModalSwitch();
   const [lobby, setLobby] = useState([]);
   const [room, setRoom] = useState('');
 
-  const onClick = (currRoom) => {
-    setRoom(currRoom);
+  const onClick = (currentRoom) => {
+    setRoom(currentRoom);
     toggleModal();
   }
 
   useEffect(() => {
     socket.on('get rooms', (rooms) => {
-      console.log(rooms);
       setLobby(rooms)
     });
 
@@ -31,22 +30,26 @@ const Lobby = ({socket}) => {
 
         {lobby.length > 0 ? lobby.map((room) => 
           (
+
             <div key={room.name} className={room.users.length < 2 ? 'chatroom' : 'chatroom--locked'}>
               <div className='details-container'>
                 <h3><small>Room Name: </small>{room.name}</h3>
                 <h3><small>Host: </small>{room.host}</h3>
-                { room.users.length < 2 ? <h4>Capacity: {room.users.length}/2</h4> : <div className='join'>FULL{room.users.length}</div> }
+                { room.users.length < 2 ? <h4>Capacity: {room.users.length}/2</h4> : <div className='join'>FULL</div> }
               </div>
               <button className='join' onClick={() => onClick(room)}>JOIN</button>
             </div>
+
           )) : (
+
             <div className="chatrooms--none">
               <h1>Currently no chatrooms available.</h1>
             </div> 
+
           )
         }
 
-        <Modal isOpen={isOpen} toggleModal={toggleModal} > {/* !!! potentially unused */}
+        <Modal isOpen={isOpen} toggleModal={toggleModal} >
           <JoinRoom room={room} lobby={lobby} />
         </Modal>
 
