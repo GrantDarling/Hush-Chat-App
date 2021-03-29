@@ -1,4 +1,3 @@
-const { Console } = require('console');
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
@@ -42,7 +41,6 @@ io.on("connection", (socket) => {
     for (room of rooms) { 
       if(room.name == joinedRoom && !room.users.includes(id)) { 
         room.users.push(id); 
-        console.log(`${id} has been added to ${room.name}`);
       };
     };
   });
@@ -58,6 +56,12 @@ io.on("connection", (socket) => {
       socket.leave(room);
     };
   });
+
+  // Leave an existing room instance
+  socket.on('refesh clients', (room, state, roomStateVideo) => {
+    socket.to(room).emit('refesh clients', state, roomStateVideo)
+    console.log(roomStateVideo)
+  } );
 
   // Send chat within an existing room instance
   socket.on('chat message', (message, room, guest) => {

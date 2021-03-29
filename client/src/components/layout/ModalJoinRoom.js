@@ -1,40 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 const ModalJoinRoom = ({ room, lobby }) => {
   const [redirect, setRedirect] = useState(false);
-  const [guestUserName, setGuestUserName] = useState('');
-  const [allowGuestVideo, setAllowGuestVideo] = useState('');
+  const [other, setOther] = useState('');
+  const [allowOtherVideo, setAllowOtherVideo] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
-    
     setRedirect(true);
   };
 
-    const onChange = (e) => {
-        setGuestUserName(e.target.value);
-    }
-
-    const onChange2 = (e) => {
-        setAllowGuestVideo(e.target.value);
-    }
-
-  useEffect(() => {
-  }, []);
+  const onChangeGuest = (e) => setOther(e.target.value);
+  const onChangeVideo = (e) => setAllowOtherVideo(e.target.value)
 
   return (
     <div className='modal-child'>
+      {console.log(room)}
       <h1>JOIN ROOM</h1>
       <form onSubmit={onSubmit}>
-        <label htmlFor='username'>Username: {guestUserName} </label>
+        <label htmlFor='username'>Username: </label>
         <input 
           type='text' 
           placeholder="Username"
-          name='guestUserName' 
-          value={guestUserName} 
-          onChange={onChange} 
-          // required
+          name='other' 
+          value={other} 
+          onChange={onChangeGuest} 
+          required
            /> 
 
         <label htmlFor='allowVideo'>Allow Video?</label> <br/>
@@ -45,8 +37,8 @@ const ModalJoinRoom = ({ room, lobby }) => {
           className="checkmark" 
           name="allowGuestVideo" 
           value="true" 
-          onChange={onChange2} 
-          // required
+          onChange={onChangeVideo} 
+          required
         />
 
         <label htmlFor='allowVideo'>Do Not Allow</label>
@@ -56,22 +48,24 @@ const ModalJoinRoom = ({ room, lobby }) => {
           className="checkmark" 
           name="allowGuestVideo" 
           value="" 
-          onChange={onChange2} 
-          // required
+          onChange={onChangeVideo} 
+          required
         />
 
         <button type="submit" name='submit'>JOIN</button>
       </form> 
-      { redirect ? <Redirect exact to={{
-      pathname:'/room',
-      state: { joinRoomName: room.name,
-                host: room.host,
-                rooms: lobby,
-              guestUserName: guestUserName,
-              allowGuestVideo: allowGuestVideo }  
-    }} 
-    />
-    : '' }
+      { redirect 
+      ?<Redirect exact to=
+          {{ pathname:'/room', state: {  
+              joinRoomName: room.name,
+              host: room.host,
+              rooms: lobby,
+              other: other, 
+              allowVideo: room.allowVideo,
+              allowOtherVideo: allowOtherVideo 
+            }  
+          }} 
+        /> : '' }
     </div>
   );
 };

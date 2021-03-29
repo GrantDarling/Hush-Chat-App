@@ -10,44 +10,64 @@ const Room = ({ state, socket }) => {
 
     // Initialize room state
     const [room, setRoom] = useState({
-        roomName: '',
-        hostUsername: '',
-        guestUserName: '',
-        allowVideo: '',
+        name: '',
+        host: '',
+        other: '',
+        allowVideo: 'true',
         allowGuestVideo: '',
         chatMessage: '',
         roomCreated: false
     })
         
-    const { roomName, hostUsername, allowVideo, chatMessage, roomCreated, guestUserName, allowGuestVideo } = room;
+    const { name, host, allowVideo, chatMessage, roomCreated, other, allowGuestVideo } = room;
 
     useEffect(() => {
+        
         if(roomCreated) {
-            socket.emit('create room', roomName, hostUsername);
-            socket.emit('join room', roomName);
-
-            setRoom({ ...room, 
+            socket.emit('create room', name, host);
+            socket.emit('join room', name);
+            setRoom({ 
+                ...room, 
                 roomCreated: false,
-                guestUserName:  hostUsername});
+                host: host,
+                allowVideo: allowVideo
+            });
         }
-    },[roomName, hostUsername, roomCreated, room, socket])
+
+        return () => {}; 
+    },[name, host, roomCreated, room, socket, allowVideo])
 
     useEffect(() => {
+       console.log('allowVideo: ' + allowVideo);
         if(state) {
             if (!!state.newRoom) {
                 toggleModal();
             }
            if (state.joinRoomName) {
-                setRoom({ ...room, roomName: state.joinRoomName,
-                guestUserName: state.guestUserName,
-                allowGuestVideo: state.allowGuestVideo,
-                hostUsername: state.guestUserName})
-                socket.emit('join room', state.joinRoomName);
-                alert('this sent');
+            setRoom({ 
+                ...room, 
+                name: state.joinRoomName,
+                other: state.host,
+                allowVideo: state.allowOtherVideo,
+                allowGuestVideo: allowVideo,
+                host: state.other,
+            });
+            socket.emit('refesh clients', state.joinRoomName, state, allowVideo);
+            socket.emit('join room', state.joinRoomName);
             }
         }
 
-    
+        socket.on('refesh clients', (state, roomStateVideo) => {
+            setRoom({ 
+                ...room, 
+                name: state.joinRoomName,
+                other: state.other,
+                allowVideo: roomStateVideo,
+                allowGuestVideo: state.allowOtherVideo,
+                host: state.host
+            });
+        })
+         return () => {}; 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
@@ -62,7 +82,7 @@ const Room = ({ state, socket }) => {
     const sendMessage = (e) => {
         e.preventDefault();
         
-        socket.emit('chat message', chatMessage, roomName, guestUserName);
+        socket.emit('chat message', chatMessage, name, host);
 
         let chatContainer = document.getElementById('chat');
         let messageContainer = document.createElement('div');
@@ -71,7 +91,7 @@ const Room = ({ state, socket }) => {
 
         messageContainer.classList.add('message-host');
         messageContainer.appendChild(messageSender);
-        messageSender.innerHTML = `@${hostUsername}`;
+        messageSender.innerHTML = `@${host}`;
         messageContainer.appendChild(messageTextContainer);
         messageTextContainer.innerHTML = `${chatMessage}`;
 
@@ -86,14 +106,14 @@ const Room = ({ state, socket }) => {
 
     return (
         <section className='Room'>
-            <h3 className='Room-name'>Chatroom: {roomName}</h3>
+            <h3 className='Room-name'>Chatroom: {name}</h3>
             <div className='chatbox'> 
                 <div className='chat'>
                     <div className='messages' id='chat'>
                         <ul className="message-emit">
-                            <li>'{roomName}' group created...</li>
-                            <li>@{hostUsername} has entered the chat.</li>
-                            <li>@LukeSkywalker has entered the chat.</li>
+                            <li>'{name}' group created...</li>
+                            <li>@{host} has entered the chat.</li>
+                            <li>@{other} has entered the chat.</li>
                         </ul>
                     </div>
                     <form className='input-controller' onSubmit={sendMessage}>
@@ -103,12 +123,12 @@ const Room = ({ state, socket }) => {
                 </div>
                 <div className='videos'>
                     <div className='host'>
-                        <h4 className='username' >@{hostUsername} {allowVideo}</h4>
-                        <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!allowVideo ? '' : 'display-none' } />
+                        <h4 className='username' >@{host}</h4>
+                        <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!allowVideo ? 'active-video' : '' } />
                     </div>
                     <div className='guest'>
-                        <h4 className='username' >@{guestUserName}</h4>
-                        <img src={GuestPlaceholder} alt="Guest Placeholder" className={ !!allowGuestVideo ? '' : 'display-none' }/>
+                        <h4 className='username' >@{other}</h4>
+                        <img src={GuestPlaceholder} alt="Guest Placeholder" className={ !!allowGuestVideo ? 'active-video' : '' }/>
                     </div>
 
                     {/* <video className='host' />
@@ -116,7 +136,7 @@ const Room = ({ state, socket }) => {
                 </div>
 
                 <Modal isOpen={isOpen} toggleModal={toggleModal} >
-                    <CreateRoom roomName={roomName} hostUsername={hostUsername} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} onChange={onChange} socket={socket} roomCreated={roomCreated} />
+                    <CreateRoom name={name} host={host} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} onChange={onChange} socket={socket} roomCreated={roomCreated} />
                 </Modal>
 
             </div>
