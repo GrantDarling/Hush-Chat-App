@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
 
   // Send chat within an existing room instance
   socket.on('chat message', (message, room, guest) => {
-    socket.to(room).emit('chat message', message, guest);
+    socket.to(room).emit('chat message', guest, message);
     console.log(message + ' ' + id );
   });
 

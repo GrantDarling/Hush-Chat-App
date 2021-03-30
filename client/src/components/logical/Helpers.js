@@ -1,6 +1,5 @@
-
 const Helpers = () => {
-
+    
     const CreateElement = (element, attributes) => {
         element = document.createElement(element);
         if (attributes) {
