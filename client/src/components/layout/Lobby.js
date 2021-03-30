@@ -15,6 +15,7 @@ const Lobby = ({socket}) => {
 
   useEffect(() => {
     socket.on('get rooms', (rooms) => {
+      console.log(rooms)
       setLobby(rooms)
     });
 
@@ -35,6 +36,7 @@ const Lobby = ({socket}) => {
               <div className='details-container'>
                 <h3><small>Room Name: </small>{room.name}</h3>
                 <h3><small>Host: </small>{room.host.name}</h3>
+                {console.log('total users: ' + room.users)}
                 { room.users.length < 2 ? <h4>Capacity: {room.users.length}/2</h4> : <div className='join'>FULL</div> }
               </div>
               <button className='join' onClick={() => onClick(room)}>JOIN</button>

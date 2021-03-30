@@ -1,105 +1,37 @@
 const express = require('express');
 const app = express();
+const socketAPI = require('./socketAPI');
 const server = require('http').Server(app);
 const io = require("socket.io")(server, { cors: 
   { origin: 'http://localhost:3000', methods: ['GET', 'POST'] }
 });
 
-// socket.io functions
-let rooms = [];
 
 io.on("connection", (socket) => {
-  const {id} = socket.client;
-  console.log(`${id} connected...`);
+  
+  socketAPI.connected(socket);
 
-  socket.on('disconnect', function() {
-    console.log(`${id} disconnected...`);
-  });
+  socket.on('disconnect', () => socketAPI.disconnect(socket));
 
-  // Create a new room instance
-  socket.on('create room', (createdRoom, currentHost, allowHostVideo) => {
-    let listOfRooms = [];
+  socket.on('create room', ( emittedRoom, emittedHost, emittedAllowVideo ) => 
+    socketAPI.createRoom(socket, emittedRoom, emittedHost, emittedAllowVideo));
 
-    for (room of rooms) { 
-      listOfRooms.push(room.name) 
-    };
+  socket.on('join room', (emittedRoom) => socketAPI.joinRoom(socket, emittedRoom));
 
-    if(!listOfRooms.includes(createdRoom)) {
-        let addRoom = {
-          name: createdRoom,
-          host: {
-            name: currentHost,
-            allowVideo: allowHostVideo
-          },
-          users: []
-        };
-       rooms.push(addRoom);
-    }
-  });
+  socket.on('leave all rooms', () => socketAPI.leaveAllRooms(socket));
 
-  // Join an existing room instance
-  socket.on('join room', (joinedRoom) => {
-    socket.join(joinedRoom);
-    socket.to(joinedRoom).emit('user joined', id);
-    
-    for (room of rooms) { 
-      if(room.name == joinedRoom && !room.users.includes(id)) { 
-        room.users.push(id); 
-      };
-    };
-           console.log(rooms)
-  });
+  socket.on('refesh clients', (emittedRoom, guestState) => socketAPI.refreshClients(socket, emittedRoom, guestState));
 
-  // Leave an existing room instance
-  socket.on('leave all rooms', () => {
+  socket.on('chat message', (message, emittedRoom, sender) => 
+    socketAPI.sendChatMessage(socket, sender, message, emittedRoom));
 
-    for (room of rooms) { 
-      if(room.users.includes(id)) { 
-        room.users.pop(id); 
-      };
-      
-      socket.leave(room);
-    };
-  });
+  socket.on('get rooms', () => socketAPI.getRooms(socket));
 
-  // Leave an existing room instance
-  socket.on('refesh clients', (room, state, roomStateVideo) => {
-    socket.to(room).emit('refesh clients', state, roomStateVideo)
-    console.log(roomStateVideo)
-  } );
-
-  // Send chat within an existing room instance
-  socket.on('chat message', (message, room, guest) => {
-    socket.to(room).emit('chat message', guest, message);
-    console.log(message + ' ' + id );
-  });
-
-  // Get a list of available rooms
-  socket.on('get rooms', () => {
-    io.emit('get rooms', rooms);
-  });
-
-  // Close current room
-  socket.on('close room', (currentRoom) => {
-    const newRooms = rooms.filter((room) => room.name !== currentRoom);
-    socket.to(currentRoom).emit('host left', id);
-
-    for (room of rooms) {
-      console.log('this is the room ' + room.name )
-      if (room.name === currentRoom) {
-        //rooms.pop(room);
-        //console.log('just popped' + room);
-      }
-      console.log('this is the current room ' + currentRoom )
-    };
-
-    rooms = newRooms
-    console.log(rooms)
-  });
+  socket.on('close room', (emittedRoom) => socketAPI.closeRoom(socket, emittedRoom));
 
 });
 
-// Define routes & start server
+// Start server
 app.get('/', (res, req) => {
   req.send('Hush App Server...');
 });
