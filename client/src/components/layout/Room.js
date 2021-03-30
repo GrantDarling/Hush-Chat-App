@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Prompt, isPrompt } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -21,11 +21,6 @@ const Room = ({ state, socket }) => {
         hostCreatedMe: true
     })
 
-    const unMountme = () => {
-        console.log('unmounted!!!' + name);
-        socket.emit('close room', name);
-    }
-        
     const { name, host, allowVideo, chatMessage, roomCreated, other, allowGuestVideo, prevUrl, hostCreatedMe } = room;
 
     useEffect(() => {
@@ -33,6 +28,7 @@ const Room = ({ state, socket }) => {
 
             socket.emit('create room', name, host, allowVideo);
             socket.emit('join room', name);
+
             setRoom({ 
                 ...room, 
                 roomCreated: false,
@@ -49,8 +45,8 @@ const Room = ({ state, socket }) => {
 
     useEffect(() => {
                 socket.on('host left', (id) => {
-                    console.log('host ' + id + 'left')
-                    console.log('room has been removed');
+                    // console.log('host ' + id + 'left')
+                    // console.log('room has been removed');
                     setRoom({
                         ...room,
                         name: state.joinRoomName,
@@ -61,7 +57,7 @@ const Room = ({ state, socket }) => {
                     })
                 });
 
-       console.log('allowVideo: ' + allowVideo);
+       // console.log('allowVideo: ' + allowVideo);
         if(state) {
             if (!!state.newRoom) {
                 toggleModal();
@@ -76,7 +72,7 @@ const Room = ({ state, socket }) => {
                 host: state.other,
                 hostCreatedMe: state.hostCreatedMe
             });
-            console.log('but im set to: ' + hostCreatedMe)
+            // console.log('but im set to: ' + hostCreatedMe)
             socket.emit('refesh clients', state.joinRoomName, state, allowVideo);
             socket.emit('join room', state.joinRoomName);
             }
@@ -99,8 +95,13 @@ const Room = ({ state, socket }) => {
     },[]);
 
     useEffect(() => {
-        console.log('PrevIRL: ' + prevUrl)
-            console.log('hostCreatedMe ' + hostCreatedMe);
+    const unMountme = () => {
+        // console.log('unmounted!!!' + name);
+        socket.emit('close room', name);
+    };    
+
+        // console.log('PrevIRL: ' + prevUrl)
+        // console.log('hostCreatedMe ' + hostCreatedMe);
         return function cleanup() {
             let newUrl = window.location.href;
             if (prevUrl !== newUrl && hostCreatedMe) {
@@ -110,7 +111,7 @@ const Room = ({ state, socket }) => {
 
 
         }
-    }, [window.location.href, name, hostCreatedMe]);
+    }, [name, hostCreatedMe, prevUrl, socket]);
 
 
     const onChange = (e) => {

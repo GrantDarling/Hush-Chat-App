@@ -1,45 +1,20 @@
 // Import Component
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Routes from './components/routes/Routes';
 import './App.scss';
+import Socket from './components/logical/Socket';
 import io from 'socket.io-client';
 const socket = io.connect('http://localhost:5000');
 
 
-function usePageViews() {
-  let location = useLocation();
+const App = () => {
+  const [emitMessage] = Socket();
 
   useEffect(() => {
-    // ga.send(["pageview", location.pathname]);
-  }, [location]);
-}
-
-let App = () => {
-
-useEffect(() => {
-  console.log('opened!');
-            socket.on('chat message', (message, guest) => {
-                console.log(message);
-                let chatContainer = document.getElementById('chat');
-                let messageContainer = document.createElement('div');
-                let messageSender = document.createElement('h3');
-                let messageTextContainer = document.createElement('p');
-
-                //alert('sending now!');
-
-                messageContainer.classList.add('message-guest');
-                messageContainer.appendChild(messageSender);
-                messageSender.innerHTML = `@${guest}`;
-                messageContainer.appendChild(messageTextContainer);
-                messageTextContainer.innerHTML = `${message}`;
-
-                chatContainer.appendChild(messageContainer);
-                chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
-            });
-
-  }, []);
+    socket.on('chat message', (message, guest) => emitMessage(guest, message));
+  }, [emitMessage]);
 
   return (
     <Router>
