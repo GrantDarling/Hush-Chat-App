@@ -16,7 +16,6 @@ const ModalJoinRoom = ({ room, lobby }) => {
 
   return (
     <div className='modal-child'>
-      {console.log(room)}
       <h1>JOIN ROOM</h1>
       <form onSubmit={onSubmit}>
         <label htmlFor='username'>Username: </label>
@@ -54,19 +53,20 @@ const ModalJoinRoom = ({ room, lobby }) => {
 
         <button type="submit" name='submit'>JOIN</button>
       </form> 
-      { redirect 
-      ?<Redirect exact to=
-          {{ pathname:'/room', state: {  
-              joinRoomName: room.name,
-              host: room.host.name,
-              rooms: lobby,
-              other: other, 
-              allowVideo: room.host.allowVideo,
-              allowOtherVideo: allowOtherVideo ,
-              hostCreatedMe: false
-            }  
-          }} 
-        /> : '' }
+      { redirect ?
+        <Redirect exact to=
+            {{ pathname:'/room', state: {  
+                joinRoomName: room.name,
+                host: room.host.name,
+                rooms: lobby,
+                other: other, 
+                allowVideo: room.host.allowVideo,
+                allowOtherVideo: allowOtherVideo ,
+                hostCreatedMe: false
+              }  
+            }} 
+        /> : '' 
+      }
     </div>
   );
 };

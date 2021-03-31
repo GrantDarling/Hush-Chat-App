@@ -36,10 +36,8 @@ module.exports = {
         rooms.forEach((room) => {
             if(room.name === emittedRoom && !room.users.includes(socket.client.id)) { 
                 room.users.push(socket.client.id); 
-                console.log('just pushed ' + socket.client.id);
             };        
         });
-        return console.log(rooms);
     },
 
     leaveAllRooms: (socket) => {

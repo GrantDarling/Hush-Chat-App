@@ -13,7 +13,7 @@ io.on("connection", (socket) => {
 
   socket.on('disconnect', () => socketAPI.disconnect(socket));
 
-  socket.on('create room', ( emittedRoom, emittedHost, emittedAllowVideo ) => 
+  socket.on('create room', (emittedRoom, emittedHost, emittedAllowVideo ) => 
     socketAPI.createRoom(socket, emittedRoom, emittedHost, emittedAllowVideo));
 
   socket.on('join room', (emittedRoom) => socketAPI.joinRoom(socket, emittedRoom));

@@ -7,7 +7,6 @@ import Room from '../layout/Room';
 import Lobby from '../layout/Lobby';
 
 const Routes = ({socket, location}) => {
-  //console.log('this is my ' + location.state.foo);
   return (
     <section className='container'>
       <Switch socket={socket} >

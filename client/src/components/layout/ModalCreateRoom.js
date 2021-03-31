@@ -4,21 +4,18 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
+    toggleModal();
     setRoom({ 
       ...room, 
       roomCreated: true 
     });
-
-    toggleModal();
   }
 
   return (
     <div className='modal-child'>
       <h1>CREATE ROOM</h1>
       <form onSubmit={onSubmit}>
-
-        <label htmlFor='name'>Room Name: </label>
+        <label htmlFor='name'>Room Name:</label>
         <input 
           type='text' 
           placeholder="Room Name" 
@@ -27,8 +24,7 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           onChange={onChange} 
           required
         /> 
-
-        <label htmlFor='host'>Username: </label>
+        <label htmlFor='host'>Username:</label>
         <input 
           type='text' 
           placeholder="Username" 
@@ -37,8 +33,7 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           onChange={onChange} 
           required
         /> 
-        
-        <label htmlFor='allowVideo'>Allow Video? {room.allowVideo}</label> <br/>
+        <label htmlFor='allowVideo'>Allow Video?</label> <br/>
         <label htmlFor='allowVideo'>Allow</label>
         <input 
           type="radio" 
@@ -49,7 +44,6 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           onChange={onChange} 
           required
         />
-
         <label htmlFor='allowVideo'>Do Not Allow</label>
         <input 
           type="radio" 
@@ -60,7 +54,6 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           onChange={onChange} 
           required
         />
-
         <button type="submit" name='submit'>CREATE</button>
       </form> 
     </div>

@@ -8,6 +8,7 @@ import ModalSwitch from '../logical/Modal';
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
+
     // Initialize room state
     const [room, setRoom] = useState({
         name: '',
@@ -25,7 +26,6 @@ const Room = ({ state, socket }) => {
 
     useEffect(() => {
         if(roomCreated) {
-
             socket.emit('create room', name, host, allowVideo);
             socket.emit('join room', name);
 
@@ -39,14 +39,17 @@ const Room = ({ state, socket }) => {
             });
         }
 
-        return () => {}; 
-    },[name, host, roomCreated, room, socket, allowVideo])
+        return function cleanup() {
+            let newUrl = window.location.href;
+            if (prevUrl !== newUrl && hostCreatedMe) {
+                socket.emit('close room', name);
+            }
+        }
+    },[name, host, roomCreated, room, socket, allowVideo, hostCreatedMe, prevUrl])
 
 
     useEffect(() => {
                 socket.on('host left', (id) => {
-                    // console.log('host ' + id + 'left')
-                    // console.log('room has been removed');
                     setRoom({
                         ...room,
                         name: state.joinRoomName,
@@ -57,7 +60,6 @@ const Room = ({ state, socket }) => {
                     })
                 });
 
-       // console.log('allowVideo: ' + allowVideo);
         if(state) {
             if (!!state.newRoom) {
                 toggleModal();
@@ -72,7 +74,7 @@ const Room = ({ state, socket }) => {
                 host: state.other,
                 hostCreatedMe: state.hostCreatedMe
             });
-            // console.log('but im set to: ' + hostCreatedMe)
+
             socket.emit('refesh clients', state.joinRoomName, state, allowVideo);
             socket.emit('join room', state.joinRoomName);
             }
@@ -95,22 +97,6 @@ const Room = ({ state, socket }) => {
     },[]);
 
     useEffect(() => {
-    const unMountme = () => {
-        // console.log('unmounted!!!' + name);
-        socket.emit('close room', name);
-    };    
-
-        // console.log('PrevIRL: ' + prevUrl)
-        // console.log('hostCreatedMe ' + hostCreatedMe);
-        return function cleanup() {
-            let newUrl = window.location.href;
-            if (prevUrl !== newUrl && hostCreatedMe) {
-                unMountme();
-                
-            }
-
-
-        }
     }, [name, hostCreatedMe, prevUrl, socket]);
 
 

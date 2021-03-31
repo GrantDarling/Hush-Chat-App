@@ -15,7 +15,6 @@ const Socket = () => {
         chatContainer.appendChild(message);
         chatContainer.scrollTop = (chatContainer.scrollHeight - chatContainer.clientHeight);
     };
-
     return [emitMessage];
 }
 
