@@ -1,13 +1,11 @@
+import Socket from '../logical/Socket';
 
-const RoomLogic = (room, setRoom) => {
+const RoomLogic = (room, setRoom, socket, chatMessage) => {
+    const [postMessage] = Socket();
 
     const setLocalRoom = (setRoom, room) => {
         setRoom({ 
             ...room, 
-            host: {
-                name: room.host.name,
-                allowVideo: room.host.AllowVideo,
-            },
             isCreated: false
         });
     };
@@ -16,7 +14,7 @@ const RoomLogic = (room, setRoom) => {
         socket.on('refesh clients', (state) => {
             setRoom({ 
                 ...room, 
-                name: state.joinRoomName,
+                name: state.name,
                 host: {
                     name: state.host,
                     allowVideo: state.allowVideo
@@ -49,12 +47,19 @@ const RoomLogic = (room, setRoom) => {
 
     const onChange = (e) => {
         return (
-            e.target.name === 'host'
-            ? setRoom({ ...room, [e.target.name]: { name: e.target.value }})
+            e.target.name === 'host' 
+            ? setRoom({ ...room, [e.target.name] : { ...room.host, [e.target.getAttribute("target-child")]: e.target.value }})
             : setRoom({ ...room, [e.target.name]: e.target.value })
         )
     }
-    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange];
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+        postMessage(room.host.name, chatMessage, `message-host`);
+        socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`);
+        setRoom({ ...room, chatMessage: '' });
+    };
+    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage];
 }
 
 export default RoomLogic;

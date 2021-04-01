@@ -4,17 +4,15 @@ import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
-import Socket from '../logical/Socket';
 import RoomLogic from '../logical/RoomLogic';
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
-    const [postMessage] = Socket();
     const [room, setRoom] = useState({
         name: '',
         host: {
             name: '',
-            allowVideo: ''
+            allowVideo: '',
         },        
         guest: {
             name: '',
@@ -28,13 +26,14 @@ const Room = ({ state, socket }) => {
     });
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
 
-    const [setLocalRoom, setClientRooms, setJoinedRoom, onChange] = RoomLogic(room, setRoom);
+    const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
 
     useEffect(() => {
 
         // Initiate new room
         if (!!state.clickedNewRoom) {
             toggleModal();
+            setClientRooms(setRoom, room, socket);
             state.clickedNewRoom = false;
         }
 
@@ -43,14 +42,13 @@ const Room = ({ state, socket }) => {
             socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
             socket.emit('join room', room.name);
             setLocalRoom(setRoom, room);
-            setClientRooms(setRoom, room, socket);
         }
 
         // Guest has joined
         if (!hasJoined && state.hasJoined) {
             setJoinedRoom(setRoom, room, state);
-            socket.emit('refesh clients', state.joinRoomName, state, room.host.allowVideo);
-            socket.emit('join room', state.joinRoomName);
+            socket.emit('refesh clients', state.name, state);
+            socket.emit('join room', state.name);
         }
 
         // Clean up & close room
@@ -64,16 +62,9 @@ const Room = ({ state, socket }) => {
         }
     },[socket, room, state, isCreated, isHost, hasJoined, setURL, toggleModal, setLocalRoom, setClientRooms, setJoinedRoom])
 
-    const sendMessage = (e) => {
-        e.preventDefault();
-        postMessage(room.host.name, chatMessage, `message-host`);
-        socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`);
-        setRoom({ ...room, chatMessage: '' });
-    };
-
     return (
         <section className='Room'>
-            <h3 className='Room-name'>Chatroom: {room.name}</h3>
+            <h3 className='Room-name'>Chatroom: {room.host.allowVideo} {room.name}</h3>
             <div className='chatbox'> 
                 <div className='chat'>
                     <div className='messages' id='chat'>

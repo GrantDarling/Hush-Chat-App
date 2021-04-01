@@ -5,10 +5,7 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     toggleModal();
-    setRoom({ 
-      ...room, 
-      isCreated: true 
-    });
+    setRoom({ ...room, isCreated: true });
   }
 
   return (
@@ -29,6 +26,7 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           type='text' 
           placeholder="Username" 
           name='host' 
+          target-child='name'
           value={room.host.name} 
           onChange={onChange} 
           required
@@ -39,7 +37,8 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           type="radio" 
           id="allowed" 
           className="checkmark" 
-          name="allowVideo" 
+          name="host" 
+          target-child='allowVideo'
           value="true" 
           onChange={onChange} 
           required
@@ -49,7 +48,8 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           type="radio" 
           id="not-allowed" 
           className="checkmark" 
-          name="allowVideo" 
+          name="host" 
+          target-child='allowVideo'
           value="" 
           onChange={onChange} 
           required
