@@ -7,7 +7,7 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
     toggleModal();
     setRoom({ 
       ...room, 
-      roomCreated: true 
+      isCreated: true 
     });
   }
 
@@ -29,7 +29,7 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           type='text' 
           placeholder="Username" 
           name='host' 
-          value={room.host} 
+          value={room.host.name} 
           onChange={onChange} 
           required
         /> 

@@ -8,13 +8,14 @@ import Socket from './components/logical/Socket';
 import io from 'socket.io-client';
 const socket = io.connect('http://localhost:5000');
 
-
 const App = () => {
-  const [emitMessage] = Socket();
+  const [postMessage] = Socket();
 
   useEffect(() => {
-    socket.on('chat message', (guest, message) => emitMessage(guest, message));
-  }, [emitMessage]);
+    socket.on('chat message', (guest, message, messageClass) => {
+      postMessage(guest, message, messageClass)
+    });
+  }, [postMessage]);
 
   return (
     <Router>

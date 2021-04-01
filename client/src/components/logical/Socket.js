@@ -3,9 +3,9 @@ import Helpers from './Helpers';
 const Socket = () => {
   const [CreateElement] = Helpers();
 
-    const emitMessage = (emittedUser, emittedMessage) => {
+    const postMessage = (emittedUser, emittedMessage, userClass) => {
         const chatContainer = document.getElementById('chat');
-        const message = CreateElement('div', { className: 'message-guest'});
+        const message = CreateElement('div', { className: `${userClass}`});
         const sender = CreateElement('h3', { innerHTML: `@${emittedUser}` });
         const text = CreateElement('p', { innerHTML: `${emittedMessage}` });
 
@@ -15,7 +15,7 @@ const Socket = () => {
         chatContainer.appendChild(message);
         chatContainer.scrollTop = (chatContainer.scrollHeight - chatContainer.clientHeight);
     };
-    return [emitMessage];
+    return [postMessage];
 }
 
 export default Socket;

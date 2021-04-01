@@ -56,13 +56,12 @@ const ModalJoinRoom = ({ room, lobby }) => {
       { redirect ?
         <Redirect exact to=
             {{ pathname:'/room', state: {  
-                joinRoomName: room.name,
+                name: room.name,
                 host: room.host.name,
-                rooms: lobby,
-                other: other, 
                 allowVideo: room.host.allowVideo,
+                other: other, 
                 allowOtherVideo: allowOtherVideo ,
-                hostCreatedMe: false
+                hasJoined: true
               }  
             }} 
         /> : '' 

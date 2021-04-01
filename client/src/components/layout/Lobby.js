@@ -18,7 +18,7 @@ const Lobby = ({socket}) => {
     socket.emit('leave all rooms');
     socket.emit('get rooms');
 
-    return () => {}
+    return () => { setLobby({})}
   }, [socket]);
   
   return (

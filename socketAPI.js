@@ -6,10 +6,6 @@ module.exports = {
         return console.log(`${socket.client.id} connected...`);
     },
 
-    disconnect: (socket) => {
-        return console.log(`${socket.client.id} disconnected...`);
-    },
-
     createRoom: (socket, emittedRoom, emittedHost, emittedAllowHostVideo) => {
         let listOfRooms = [];
 
@@ -51,7 +47,7 @@ module.exports = {
 
     refreshClients: (socket, emittedRoom, guestState) => socket.to(emittedRoom).emit('refesh clients', guestState),
 
-    sendChatMessage: (socket, sender, message, emittedRoom) => socket.to(emittedRoom).emit('chat message', sender, message),
+    sendChatMessage: (socket, sender, message, emittedRoom, messageClass) => socket.to(emittedRoom).emit('chat message', sender, message, messageClass),
 
     getRooms: (socket) => socket.emit('get rooms', rooms),
 
@@ -59,6 +55,10 @@ module.exports = {
         const roomsOmitEmitted = rooms.filter((room) => room.name !== emittedRoom);
         socket.to(emittedRoom).emit('host left', socket.client.id);
         rooms = roomsOmitEmitted
-    }
+    },
+
+    disconnect: (socket) => {
+        return console.log(`${socket.client.id} disconnected...`);
+    },
 
 };

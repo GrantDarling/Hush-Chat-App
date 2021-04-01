@@ -4,145 +4,83 @@ import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
-
+import Socket from '../logical/Socket';
+import RoomLogic from '../logical/RoomLogic';
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
-
-    // Initialize room state
+    const [postMessage] = Socket();
     const [room, setRoom] = useState({
         name: '',
-        host: '',
-        other: '',
-        allowVideo: '',
-        allowGuestVideo: '',
+        host: {
+            name: '',
+            allowVideo: ''
+        },        
+        guest: {
+            name: '',
+            allowVideo: ''
+        },
         chatMessage: '',
-        roomCreated: false,
-        prevUrl: window.location.href,
-        hostCreatedMe: true
-    })
+        isCreated: false,
+        isHost: true,
+        hasJoined: false,
+        setURL: window.location.href,
+    });
+    const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
 
-    const { name, host, allowVideo, chatMessage, roomCreated, other, allowGuestVideo, prevUrl, hostCreatedMe } = room;
-
-    useEffect(() => {
-        if(roomCreated) {
-            socket.emit('create room', name, host, allowVideo);
-            socket.emit('join room', name);
-
-            setRoom({ 
-                ...room, 
-                roomCreated: false,
-                host: host,
-                allowVideo: allowVideo,
-                prevUrl: window.location.href,
-                hostCreatedMe: true
-            });
-        }
-
-        return function cleanup() {
-            let newUrl = window.location.href;
-            if (prevUrl !== newUrl && hostCreatedMe) {
-                socket.emit('close room', name);
-            }
-        }
-    },[name, host, roomCreated, room, socket, allowVideo, hostCreatedMe, prevUrl])
-
+    const [setLocalRoom, setClientRooms, setJoinedRoom, onChange] = RoomLogic(room, setRoom);
 
     useEffect(() => {
-                socket.on('host left', (id) => {
-                    setRoom({
-                        ...room,
-                        name: state.joinRoomName,
-                        other: state.host,
-                        allowVideo: state.allowOtherVideo,
-                        allowGuestVideo: state.allowVideo,
-                        host: state.other
-                    })
-                });
 
-        if(state) {
-            if (!!state.newRoom) {
-                toggleModal();
-            }
-           if (state.joinRoomName) {
-            setRoom({ 
-                ...room, 
-                name: state.joinRoomName,
-                other: state.host,
-                allowVideo: state.allowOtherVideo,
-                allowGuestVideo: state.allowVideo,
-                host: state.other,
-                hostCreatedMe: state.hostCreatedMe
-            });
+        // Initiate new room
+        if (!!state.clickedNewRoom) {
+            toggleModal();
+            state.clickedNewRoom = false;
+        }
 
-            socket.emit('refesh clients', state.joinRoomName, state, allowVideo);
+        // Local room created
+        if(isCreated) {
+            socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
+            socket.emit('join room', room.name);
+            setLocalRoom(setRoom, room);
+            setClientRooms(setRoom, room, socket);
+        }
+
+        // Guest has joined
+        if (!hasJoined && state.hasJoined) {
+            setJoinedRoom(setRoom, room, state);
+            socket.emit('refesh clients', state.joinRoomName, state, room.host.allowVideo);
             socket.emit('join room', state.joinRoomName);
-            }
         }
 
-        socket.on('refesh clients', (state, roomStateVideo) => {
-            setRoom({ 
-                ...room, 
-                name: state.joinRoomName,
-                other: state.other,
-                allowVideo: state.allowVideo,
-                allowGuestVideo: state.allowOtherVideo,
-                host: state.host,
-                hostDidntCreatedMe: true
-            });
-        })
+        // Clean up & close room
+        return function cleanup() {
+            let thisURL = window.location.href;
+            if (thisURL !== setURL && isHost) {
+                socket.emit('close room', room.name);
+            }
 
-        return (() => {});
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
-
-    useEffect(() => {
-    }, [name, hostCreatedMe, prevUrl, socket]);
-
-
-    const onChange = (e) => {
-        setRoom({
-        ...room,
-        [e.target.name]: e.target.value
-        })
-    }
+            if(thisURL !== setURL) return setRoom({});
+        }
+    },[socket, room, state, isCreated, isHost, hasJoined, setURL, toggleModal, setLocalRoom, setClientRooms, setJoinedRoom])
 
     const sendMessage = (e) => {
         e.preventDefault();
-        
-        socket.emit('chat message', chatMessage, name, host);
-
-        let chatContainer = document.getElementById('chat');
-        let messageContainer = document.createElement('div');
-        let messageSender = document.createElement('h3');
-        let messageTextContainer = document.createElement('p');
-
-        messageContainer.classList.add('message-host');
-        messageContainer.appendChild(messageSender);
-        messageSender.innerHTML = `@${host}`;
-        messageContainer.appendChild(messageTextContainer);
-        messageTextContainer.innerHTML = `${chatMessage}`;
-
-        chatContainer.appendChild(messageContainer);
-        chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.clientHeight;
-
-        setRoom({
-            ...room,
-            chatMessage: ''
-        });
-    }
+        postMessage(room.host.name, chatMessage, `message-host`);
+        socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`);
+        setRoom({ ...room, chatMessage: '' });
+    };
 
     return (
         <section className='Room'>
-
-            <h3 className='Room-name'>Chatroom: {name}</h3>
+            <h3 className='Room-name'>Chatroom: {room.name}</h3>
             <div className='chatbox'> 
                 <div className='chat'>
                     <div className='messages' id='chat'>
                         <ul className="message-emit">
-                            <li>'{name}' group created...</li>
-                            <li>@{host} has entered the chat.</li>
-                            <li>@{other} has entered the chat.</li>
+                            <li>{!!room.name ? `@'${room.name}' group created...` : '' }</li>
+                            <li>{!!room.host.name ? `@${room.host.name} has entered the chat.` : '' }</li>
+                            <li>{!!room.guest.name ? `@${room.guest.name} has entered the chat.` : '' }</li>
                         </ul>
                     </div>
                     <form className='input-controller' onSubmit={sendMessage}>
@@ -152,20 +90,19 @@ const Room = ({ state, socket }) => {
                 </div>
                 <div className='videos'>
                     <div className='host'>
-                        <h4 className='username' >@{host}</h4>
-                        <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!allowVideo ? 'active-video' : '' } />
+                        <h4 className='username' >{!!room.host.name ? `@${room.host.name}` : '' }</h4>
+                        <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!room.host.allowVideo ? 'active-video' : '' } />
                     </div>
                     <div className='guest'>
-                        <h4 className='username' >@{other}</h4>
-                        <img src={GuestPlaceholder} alt="Guest Placeholder" className={ !!allowGuestVideo ? 'active-video' : '' }/>
+                        <h4 className='username' >{!!room.guest.name ? `@${room.guest.name}` : ''}</h4>
+                        <img src={GuestPlaceholder} alt="Guest Placeholder" className={ !!room.guest.allowVideo ? 'active-video' : '' }/>
                     </div>
-
                     {/* <video className='host' />
                     <video className='guest' /> */}
                 </div>
 
-                <Modal isOpen={isOpen} toggleModal={toggleModal} >
-                    <CreateRoom name={name} host={host} allowVideo={allowVideo} setRoom={setRoom} room={room} toggleModal={toggleModal} onChange={onChange} socket={socket} roomCreated={roomCreated} />
+                <Modal isOpen={isOpen} >
+                    <CreateRoom socket={socket} onChange={onChange} toggleModal={toggleModal} room={room} setRoom={setRoom} />
                 </Modal>
 
             </div>
