@@ -25,8 +25,8 @@ const Room = ({ state, socket }) => {
         setURL: window.location.href,
     });
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
-
     const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
+
 
     useEffect(() => {
 

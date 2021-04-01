@@ -22,8 +22,8 @@ io.on("connection", (socket) => {
 
   socket.on('refesh clients', (emittedRoom, guestState) => socketAPI.refreshClients(socket, emittedRoom, guestState));
 
-  socket.on('chat message', (message, emittedRoom, sender, messageClass) => 
-    socketAPI.sendChatMessage(socket, sender, message, emittedRoom, messageClass));
+  socket.on('chat message', (message, emittedRoom, sender, messageClass, audio) => 
+    socketAPI.sendChatMessage(socket, sender, message, emittedRoom, messageClass, audio));
 
   socket.on('get rooms', () => socketAPI.getRooms(socket));
 

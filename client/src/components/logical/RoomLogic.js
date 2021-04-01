@@ -54,9 +54,9 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
     }
 
     const sendMessage = (e) => {
-        e.preventDefault();
-        postMessage(room.host.name, chatMessage, `message-host`);
-        socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`);
+        e.preventDefault(); 
+        postMessage(room.host.name, chatMessage, `message-host`, false);
+        socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
     return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage];

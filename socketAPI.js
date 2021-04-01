@@ -47,7 +47,7 @@ module.exports = {
 
     refreshClients: (socket, emittedRoom, guestState) => socket.to(emittedRoom).emit('refesh clients', guestState),
 
-    sendChatMessage: (socket, sender, message, emittedRoom, messageClass) => socket.to(emittedRoom).emit('chat message', sender, message, messageClass),
+    sendChatMessage: (socket, sender, message, emittedRoom, messageClass, audio) => socket.to(emittedRoom).emit('chat message', sender, message, messageClass, audio),
 
     getRooms: (socket) => socket.emit('get rooms', rooms),
 

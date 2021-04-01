@@ -12,8 +12,8 @@ const App = () => {
   const [postMessage] = Socket();
 
   useEffect(() => {
-    socket.on('chat message', (guest, message, messageClass) => {
-      postMessage(guest, message, messageClass)
+    socket.on('chat message', (guest, message, messageClass, audio) => {
+      postMessage(guest, message, messageClass, audio)
     });
   }, [postMessage]);
 
