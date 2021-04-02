@@ -5,6 +5,7 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/RoomLogic';
+// import webRTC from '../logical/webRTC';
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
@@ -27,6 +28,8 @@ const Room = ({ state, socket }) => {
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
 
+    // Call WebRTC
+    // useEffect(() => webRTC(), [room.host.allowVideo])
 
     useEffect(() => {
 
@@ -82,12 +85,17 @@ const Room = ({ state, socket }) => {
                 <div className='videos'>
                     <div className='host'>
                         <h4 className='username' >{!!room.host.name ? `@${room.host.name}` : '' }</h4>
-                        <img src={HostPlaceholder}  alt="Host Placeholder" className={ !!room.host.allowVideo ? 'active-video' : '' } />
+                        {!!room.host.allowVideo 
+                            ?  <img src={HostPlaceholder}  alt="Host Placeholder" className='active-video' /> // <video id="localVideo" autoPlay playsInline controls={false}/>
+                            : <img src={HostPlaceholder}  alt="Host Placeholder" className='' /> }
                     </div>
                     <div className='guest'>
-                        <h4 className='username' >{!!room.guest.name ? `@${room.guest.name}` : ''}</h4>
-                        <img src={GuestPlaceholder} alt="Guest Placeholder" className={ !!room.guest.allowVideo ? 'active-video' : '' }/>
+                        <h4 className='username' >{!!room.guest.name ? `@${room.guest.name}` : 'waiting for guest...'}</h4>
+                        {!!room.guest.allowVideo 
+                            ? <img src={GuestPlaceholder} alt="Guest Placeholder" className='active-video' /> // <video id="localVideo" autoPlay playsInline controls={false}/>
+                            : <img src={GuestPlaceholder} alt="Guest Placeholder" className='' /> }
                     </div>
+                    
                     {/* <video className='host' />
                     <video className='guest' /> */}
                 </div>

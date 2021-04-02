@@ -1,7 +1,13 @@
 import Socket from '../logical/Socket';
+// import useSound from 'use-sound';
+// import boop from '../../sounds/boop.mp3';
 
 const RoomLogic = (room, setRoom, socket, chatMessage) => {
     const [postMessage] = Socket();
+//     const [emitBoop] = useSound(
+//     boop,
+//     { volume: 0.25 }
+//   );
 
     const setLocalRoom = (setRoom, room) => {
         setRoom({ 

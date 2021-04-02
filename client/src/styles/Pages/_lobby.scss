@@ -55,18 +55,19 @@
 
         .join {
             @include margin(auto null null auto);
-            border: $border;
-            border-radius: $border-radius;
-            box-shadow: $box-shadow;
+            border-radius: $border-radius;   
+            border: solid 1px #e3e3e3;
             padding: 10px;
-            height: 17px;
+            height: 34px;
+            background: $white;
             width: 100px;
             text-align: center;
             text-decoration: none;
-            color: $HUSH_ORANGE;
+            color: $HUSH_GREY;
 
             &:hover {
-                border: $border-hover;
+                border: $border-hover;         
+                color: $HUSH_ORANGE;
             }
         }
     }

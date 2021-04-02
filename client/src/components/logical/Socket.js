@@ -1,14 +1,14 @@
 import Helpers from './Helpers';
-import useSound from 'use-sound';
-import boop from '../../sounds/boop.mp3';
+// import useSound from 'use-sound';
+// import boop from '../../sounds/boop.mp3';
 
 
 const Socket = () => {
   const [CreateElement] = Helpers();
-  const [emitBoop] = useSound(
-    boop,
-    { volume: 0.25 }
-  );
+  // const [emitBoop] = useSound(
+  //   boop,
+  //   { volume: 0.25 }
+  // );
 
     const postMessage = (emittedUser, emittedMessage, userClass, audio) => {
         const chatContainer = document.getElementById('chat');
@@ -22,7 +22,7 @@ const Socket = () => {
         chatContainer.appendChild(message);
         chatContainer.scrollTop = (chatContainer.scrollHeight - chatContainer.clientHeight);
         
-        if(audio) emitBoop();
+       // if(audio) emitBoop();
     };
     return [postMessage];
 }

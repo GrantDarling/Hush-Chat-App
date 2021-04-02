@@ -85,6 +85,10 @@
     .active-video {
         border: solid 1px $HUSH_ORANGE;
     }
+
+    video#localVideo {
+        width: 300px;
+    }
 }
 
 .chat {
