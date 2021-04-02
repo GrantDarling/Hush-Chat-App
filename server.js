@@ -11,24 +11,30 @@ io.on("connection", (socket) => {
   
   socketAPI.connected(socket);
 
-  socket.on('disconnect', () => socketAPI.disconnect(socket));
+  socket.on('disconnect', () => {
+    socketAPI.disconnect(socket);
+  });
 
   socket.on('create room', (emittedRoom, emittedHost, emittedAllowVideo ) => 
     socketAPI.createRoom(socket, emittedRoom, emittedHost, emittedAllowVideo));
 
-  socket.on('join room', (emittedRoom) => socketAPI.joinRoom(socket, emittedRoom));
+  socket.on('join room', (emittedRoom) => 
+    socketAPI.joinRoom(socket, emittedRoom));
 
-  socket.on('leave all rooms', () => socketAPI.leaveAllRooms(socket));
+  socket.on('leave all rooms', () => 
+    socketAPI.leaveAllRooms(socket));
 
-  socket.on('refesh clients', (emittedRoom, guestState) => socketAPI.refreshClients(socket, emittedRoom, guestState));
+  socket.on('refesh clients', (emittedRoom, guestState) => 
+    socketAPI.refreshClients(socket, emittedRoom, guestState));
 
   socket.on('chat message', (message, emittedRoom, sender, messageClass, audio) => 
     socketAPI.sendChatMessage(socket, sender, message, emittedRoom, messageClass, audio));
 
-  socket.on('get rooms', () => socketAPI.getRooms(socket));
+  socket.on('get rooms', () => 
+    socketAPI.getRooms(socket));
 
-  socket.on('close room', (emittedRoom) => socketAPI.closeRoom(socket, emittedRoom));
-
+  socket.on('close room', (emittedRoom) => 
+    socketAPI.closeRoom(socket, emittedRoom));
 });
 
 // Start server

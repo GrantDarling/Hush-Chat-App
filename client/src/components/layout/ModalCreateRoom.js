@@ -1,10 +1,13 @@
 import React from 'react';
-
+//import Socket from '../logical/Socket';
 const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
+  //const [postMessage] = Socket();
 
   const onSubmit = (e) => {
     e.preventDefault();
     toggleModal();
+    //postMessage(room.name, ' room created...', `message-general`, false);
+    //postMessage(room.host.name, ' has entered the chat.', `message-general`, false);
     setRoom({ ...room, isCreated: true });
   }
 

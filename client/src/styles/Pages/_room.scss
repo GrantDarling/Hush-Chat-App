@@ -152,5 +152,16 @@
                 border: solid 1px $white-swiss;
             }
         }
+
+        .message-general {
+            h3, p {
+                display: inline;
+                color: $grey-alto;
+                font-style: italic;
+                margin: 5px 0;    
+                font-size: 16px;      
+                font-weight: normal;  
+            }
+        }
     }
 }

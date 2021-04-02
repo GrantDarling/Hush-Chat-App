@@ -64,7 +64,7 @@ const Room = ({ state, socket }) => {
 
     return (
         <section className='Room'>
-            <h3 className='Room-name'>Chatroom: {room.host.allowVideo} {room.name}</h3>
+            <h3 className='Room-name'>Chatroom: {room.name}</h3>
             <div className='chatbox'> 
                 <div className='chat'>
                     <div className='messages' id='chat'>
