@@ -5,7 +5,6 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/RoomLogic';
-// import webRTC from '../logical/webRTC';
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
@@ -26,10 +25,10 @@ const Room = ({ state, socket }) => {
         setURL: window.location.href,
     });
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
-    const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
+    const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, webRTC] = RoomLogic(room, setRoom, socket, chatMessage);
 
     // Call WebRTC
-    // useEffect(() => webRTC(), [room.host.allowVideo])
+    useEffect(() => webRTC('video#localVideo'), [room.host.allowVideo, webRTC])
 
     useEffect(() => {
 
@@ -37,7 +36,7 @@ const Room = ({ state, socket }) => {
         if (!!state.clickedNewRoom) {
             toggleModal();
             setClientRooms(setRoom, room, socket);
-            state.clickedNewRoom = false;
+            state.clickedNewRoom = '';
         }
 
         // Local room created
@@ -58,10 +57,17 @@ const Room = ({ state, socket }) => {
         return function cleanup() {
             let thisURL = window.location.href;
             if (thisURL !== setURL && isHost) {
+                state.clickedNewRoom = 'true'
                 socket.emit('close room', room.name);
+                socket.emit('chat message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
+                return setRoom({})
             }
 
-            if(thisURL !== setURL) return setRoom({});
+            if(thisURL !== setURL) {
+                socket.emit('chat message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
+                return setRoom({})
+            };
+
         }
     },[socket, room, state, isCreated, isHost, hasJoined, setURL, toggleModal, setLocalRoom, setClientRooms, setJoinedRoom])
 
@@ -72,9 +78,9 @@ const Room = ({ state, socket }) => {
                 <div className='chat'>
                     <div className='messages' id='chat'>
                         <ul className="message-emit">
-                            <li>{!!room.name ? `@'${room.name}' group created...` : '' }</li>
-                            <li>{!!room.host.name ? `@${room.host.name} has entered the chat.` : '' }</li>
-                            <li>{!!room.guest.name ? `@${room.guest.name} has entered the chat.` : '' }</li>
+                            <li>{!!room.name ? `'${room.name}' group created...` : '' }</li>
+                            <li>{!!room.host.name ? `${room.host.name} has entered the chat.` : '' }</li>
+                            <li>{!!room.guest.name ? `${room.guest.name} has entered the chat.` : '' }</li>
                         </ul>
                     </div>
                     <form className='input-controller' onSubmit={sendMessage}>
@@ -86,13 +92,13 @@ const Room = ({ state, socket }) => {
                     <div className='host'>
                         <h4 className='username' >{!!room.host.name ? `@${room.host.name}` : '' }</h4>
                         {!!room.host.allowVideo 
-                            ?  <img src={HostPlaceholder}  alt="Host Placeholder" className='active-video' /> // <video id="localVideo" autoPlay playsInline controls={false}/>
+                            ?  <video id="localVideo" autoPlay playsInline controls={false}/> // <img src={HostPlaceholder}  alt="Host Placeholder" className='active-video' /> 
                             : <img src={HostPlaceholder}  alt="Host Placeholder" className='' /> }
                     </div>
                     <div className='guest'>
                         <h4 className='username' >{!!room.guest.name ? `@${room.guest.name}` : 'waiting for guest...'}</h4>
                         {!!room.guest.allowVideo 
-                            ? <img src={GuestPlaceholder} alt="Guest Placeholder" className='active-video' /> // <video id="localVideo" autoPlay playsInline controls={false}/>
+                            ?  <video id="'guestVideo'" autoPlay playsInline controls={false}/> // <img src={GuestPlaceholder} alt="Guest Placeholder" className='active-video' />
                             : <img src={GuestPlaceholder} alt="Guest Placeholder" className='' /> }
                     </div>
                     

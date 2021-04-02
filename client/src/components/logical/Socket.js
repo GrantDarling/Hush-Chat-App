@@ -11,9 +11,11 @@ const Socket = () => {
   // );
 
     const postMessage = (emittedUser, emittedMessage, userClass, audio) => {
+        if(emittedMessage !== null) return;
+
         const chatContainer = document.getElementById('chat');
         const message = CreateElement('div', { className: `${userClass}`});
-        const sender = CreateElement('h3', { innerHTML: `@${emittedUser}` });
+        const sender = CreateElement('h3', { innerHTML: `${emittedUser}` });
         const text = CreateElement('p', { innerHTML: `${emittedMessage}` });
 
         message.appendChild(sender);

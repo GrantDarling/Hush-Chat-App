@@ -1,4 +1,5 @@
 import Socket from '../logical/Socket';
+import webRTC from '../logical/webRTC';
 // import useSound from 'use-sound';
 // import boop from '../../sounds/boop.mp3';
 
@@ -18,6 +19,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
 
     const setClientRooms = (setRoom, room, socket) => {
         socket.on('refesh clients', (state) => {
+            webRTC('video#guestVideo')
             setRoom({ 
                 ...room, 
                 name: state.name,
@@ -65,7 +67,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
         socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage];
+    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, webRTC];
 }
 
 export default RoomLogic;
