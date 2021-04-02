@@ -11,7 +11,7 @@ const Socket = () => {
   // );
 
     const postMessage = (emittedUser, emittedMessage, userClass, audio) => {
-        if(emittedMessage !== null) return;
+        if(emittedMessage === null) return;
 
         const chatContainer = document.getElementById('chat');
         const message = CreateElement('div', { className: `${userClass}`});
