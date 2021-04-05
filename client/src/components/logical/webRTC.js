@@ -21,7 +21,7 @@ const webRTC = (targetElement) => {
       }
     }
 
-    return playVideoFromCamera();;
+    return playVideoFromCamera();
 }
 
 export default webRTC;
