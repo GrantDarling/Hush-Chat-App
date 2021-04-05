@@ -36,6 +36,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
     };
 
     const setJoinedRoom = (setRoom, room, state) => {
+        // const peerConnection = new RTCPeerConnection(configuration);
         setRoom({ 
             ...room, 
             name: state.name,

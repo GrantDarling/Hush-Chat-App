@@ -12,11 +12,11 @@ const Room = ({ state, socket }) => {
         name: '',
         host: {
             name: '',
-            allowVideo: '',
+            allowVideo: 'true',
         },        
         guest: {
             name: '',
-            allowVideo: ''
+            allowVideo: 'true'
         },
         chatMessage: '',
         isCreated: false,
@@ -26,9 +26,16 @@ const Room = ({ state, socket }) => {
     });
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, webRTC] = RoomLogic(room, setRoom, socket, chatMessage);
+      
+
 
     // Call WebRTC
-    useEffect(() => webRTC('video#localVideo'), [room.host.allowVideo, webRTC])
+    useEffect(() => {
+        //webRTC('video#localVideo')
+
+
+    
+    }, [room.host.allowVideo, webRTC])
 
     useEffect(() => {
 

@@ -8,6 +8,23 @@ const io = require("socket.io")(server, { cors:
 
 
 io.on("connection", (socket) => {
+
+  socket.on('offer', (offer, answer) => {
+    console.log(offer);
+    socket.broadcast.emit('offer', (offer));
+  }) 
+
+    socket.on('answer', (answer) => {
+    console.log(answer);
+    socket.broadcast.emit('answer', (answer));
+  }) 
+
+  socket.on('candidate', (candidate) => {
+    console.log(candidate);
+    socket.broadcast.emit('candidate', (candidate));
+  }) 
+  
+
   
   socketAPI.connected(socket);
 
