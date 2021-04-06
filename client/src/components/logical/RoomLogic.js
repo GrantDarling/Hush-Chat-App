@@ -19,7 +19,6 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
 
     const setClientRooms = (setRoom, room, socket) => {
         socket.on('refesh clients', (state) => {
-            webRTC('video#guestVideo')
             setRoom({ 
                 ...room, 
                 name: state.name,
