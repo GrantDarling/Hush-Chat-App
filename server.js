@@ -12,6 +12,9 @@ io.sockets.on("error", e => console.log(e));
 
 io.on("connection", (socket) => {
 
+  socket.on('joinedz', () => {
+    socket.emit("joinedz");
+  });
   // webRTC Sockets
   socket.on("broadcaster", () => {
     broadcaster = socket.id;

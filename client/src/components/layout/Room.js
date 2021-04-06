@@ -60,14 +60,18 @@ const Room = ({ state, socket }) => {
             }
         };
 
-        // Create offer, set local descrp. then emit offer
-        peerConnection 
-            .createOffer()
-            .then(sdp => peerConnection.setLocalDescription(sdp))
-            .then(() => {
-            socket.emit("offer", id, peerConnection.localDescription);
-            });
-        });
+            console.log('let\'s connect baby!!')
+            // Create offer, set local descrp. then emit offer
+            peerConnection 
+                .createOffer()
+                .then(sdp => peerConnection.setLocalDescription(sdp))
+                .then(() => {
+                socket.emit("offer", id, peerConnection.localDescription);
+                });
+
+        })
+
+
 
         socket.on("candidate", (id, candidate) => {
             peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
@@ -213,6 +217,9 @@ const Room = ({ state, socket }) => {
 
     useEffect(() => {
         if(state.hasJoined) {
+            socket.emit("watcher");
+            console.log('trying to connect...');
+        
         const config = {
             iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
         };
@@ -262,7 +269,7 @@ const Room = ({ state, socket }) => {
 
 
         }
-    }, [state.hasJoined])
+    }, [state.hasJoined, video])
     
 
     // !!! WEBRTC CODE !!!
