@@ -36,6 +36,28 @@ io.on("connection", (socket) => {
     socket.to(broadcaster).emit("disconnectPeer", socket.id);
   });
 
+
+  // Duplicates
+    socket.on("broadcaster2", () => {
+    broadcaster = socket.id;
+    socket.broadcast.emit("broadcaster2");
+  });
+  socket.on("watcher2", () => {
+    socket.to(broadcaster).emit("watcher2", socket.id);
+  });
+  socket.on("offer2", (id, message) => {
+    socket.to(id).emit("offer2", socket.id, message);
+  });
+  socket.on("answer2", (id, message) => {
+    socket.to(id).emit("answer2", socket.id, message);
+  });
+  socket.on("candidate2", (id, message) => {
+    socket.to(id).emit("candidate2", socket.id, message);
+  });
+  socket.on("disconnect2", () => {
+    socket.to(broadcaster).emit("disconnectPeer2", socket.id);
+  });
+
   
     // Chat Sockets
   socketAPI.connected(socket);

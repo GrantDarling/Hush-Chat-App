@@ -17,8 +17,60 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
         });
     };
 
-    const setClientRooms = (setRoom, room, socket) => {
+    const setClientRooms = (setRoom, room, socket, peerConnection2, video2) => {
         socket.on('refesh clients', (state) => {
+            socket.emit("watcher2");
+            console.log('trying to connect...');
+        
+        const config = {
+            iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
+        };
+
+        socket.on("offer2", (id, description) => {
+        peerConnection2.current = new RTCPeerConnection(config);
+        peerConnection2.current
+            .setRemoteDescription(description)
+            .then(() => peerConnection2.current.createAnswer())
+            .then(sdp => peerConnection2.current.setLocalDescription(sdp))
+            .then(() => {
+            socket.emit("answer2", id, peerConnection2.current.localDescription);
+            });
+        peerConnection2.current.ontrack = event => {
+            video2.current.srcObject = event.streams[0];
+        };
+        peerConnection2.current.onicecandidate = event => {
+            if (event.candidate) {
+            socket.emit("candidate2", id, event.candidate);
+            }
+        };
+        });
+
+        socket.on("candidate2", (id, candidate) => {
+        peerConnection2.current
+            .addIceCandidate(new RTCIceCandidate(candidate))
+            .catch(e => console.error(e));
+        });
+
+        socket.on("connect", () => {
+        socket.emit("watcher2");
+        });
+
+        socket.on("broadcaster2", () => {
+        socket.emit("watcher2");
+        });
+
+        window.onunload = window.onbeforeunload = () => {
+        socket.close();
+        peerConnection2.current.close();
+        };
+
+        function enableAudio() {
+        console.log("Enabling audio")
+        video2.current.muted = false;
+        }
+
+
+
             setRoom({ 
                 ...room, 
                 name: state.name,
