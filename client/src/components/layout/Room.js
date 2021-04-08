@@ -5,6 +5,8 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/RoomLogic';
+import Socket from '../logical/Socket';
+
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
@@ -26,6 +28,7 @@ const Room = ({ state, socket }) => {
     });
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
+    const [postMessage] = Socket();
 
     // WEBRTC CODE !!!!!!!
         const videoElement = useRef();  
@@ -35,8 +38,16 @@ const Room = ({ state, socket }) => {
         const peerConnection = createRef();
         const peerConnection2 = createRef();
 
+
+    useEffect(() => {
+        socket.on('message', (guest, message, messageClass, audio) => {
+            postMessage(guest, message, messageClass, audio)
+        });
+    }, []);
+
     useEffect(() => {
         if(isCreated) {
+
         const peerConnections = {};
         const config = {
             iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]

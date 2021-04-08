@@ -121,15 +121,4 @@ module.exports = {
         });
     },
 
-
-    closeRoom: (socket, emittedRoom) => {
-        const roomsOmitEmitted = rooms.filter((room) => room.name !== emittedRoom);
-        socket.to(emittedRoom).emit('host left', socket.client.id);
-        rooms = roomsOmitEmitted
-    },
-
-    disconnect: (socket) => {
-            // return console.log(`${socket.client.id} disconnected...`);
-    },
-
 };
