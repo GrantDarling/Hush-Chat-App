@@ -193,7 +193,7 @@ const Room = ({ state, socket }) => {
         if (!hasJoined && state.hasJoined) {
             setJoinedRoom(setRoom, room, state);
             socket.emit('join room', state.name);
-            socket.emit('refesh clients', state.name, state);
+            socket.emit('refresh clients', state.name, state);
             console.log('should now rfresh clients')
 
         }
@@ -204,12 +204,12 @@ const Room = ({ state, socket }) => {
             if (thisURL !== setURL && isHost) {
                 state.clickedNewRoom = 'true'
                 socket.emit('close room', room.name);
-                socket.emit('chat message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
+                socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
                 return setRoom({})
             }
 
             if(thisURL !== setURL) {
-                socket.emit('chat message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
+                socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
                 return setRoom({})
             };
 

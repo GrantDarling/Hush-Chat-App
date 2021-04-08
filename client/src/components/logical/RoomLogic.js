@@ -18,7 +18,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
     };
 
     const setClientRooms = (setRoom, room, socket, peerConnection2, video2) => {
-        socket.on('refesh clients', (state) => {
+        socket.on('refresh clients', (state) => {
             socket.emit("watcher2");
             console.log('trying to connect...');
         
@@ -115,7 +115,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
     const sendMessage = (e) => {
         e.preventDefault(); 
         postMessage(room.host.name, chatMessage, `message-host`, false);
-        socket.emit('chat message', chatMessage, room.name, room.host.name, `message-guest`, true);
+        socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
     return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, webRTC];
