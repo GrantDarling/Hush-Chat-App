@@ -1,26 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Modal from './Modal';
 import JoinRoom from './ModalJoinRoom';
-import ModalSwitch from '../logical/Modal';
+import LobbyLogic from '../logical/Lobby';
 
-const Lobby = ({socket}) => {
-  const [isOpen, toggleModal] = ModalSwitch();
-  const [lobby, setLobby] = useState([]);
-  const [room, setRoom] = useState({});
-
-  const onClick = (chosenRoom) => {
-    setRoom(chosenRoom);
-    toggleModal();
-  }
+const Lobby = ({ socket }) => {
+  const [onClick, getRooms, lobby, setLobby, room, isOpen, toggleModal] = LobbyLogic();
 
   useEffect(() => {
-    socket.on('get rooms', (rooms) => setLobby(rooms));
-    socket.emit('leave all rooms');
-    socket.emit('get rooms');
-
+    getRooms(socket);
     return () => { setLobby({})}
   }, [socket]);
-  
+
   return (
     <section className='Lobby'>
       <div className='chatrooms'>
@@ -28,14 +18,8 @@ const Lobby = ({socket}) => {
         {lobby.length > 0 ? lobby.map((room) => 
           (<div key={room.name} className={room.users.length < 2 ? 'chatroom' : 'chatroom--locked'}>
               <div className='details-container'>
-                <h3>
-                  <small>Room Name: </small>
-                  {room.name}
-                </h3>
-                <h3>
-                  <small>Host: </small>
-                  {room.host.name}
-                </h3>
+                <h3><small>Room Name: </small>{room.name}</h3>
+                <h3><small>Host: </small>{room.host.name}</h3>
                 { room.users.length < 2 
                   ? <h4>Capacity: {room.users.length}/2</h4> 
                   : <div className='join'>FULL</div> 
@@ -43,7 +27,7 @@ const Lobby = ({socket}) => {
               </div>
               <button className='join' onClick={() => onClick(room)}>JOIN</button>
             </div>))
-            : 
+            :
             (<div className="chatrooms--none">
               <h1>Currently no chatrooms available.</h1>
             </div>)
