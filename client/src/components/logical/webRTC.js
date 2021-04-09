@@ -115,7 +115,7 @@ const WebRTC = () => {
 
     }
 
-    const displayUserMedia = (socket, videoElement) => {
+    const displayUserMedia = (socket, videoElement, broadcaster) => {
                 // Make me a useRef!
         const videoSelect = document.querySelector("select#videoSource");
 
@@ -174,10 +174,10 @@ const WebRTC = () => {
                 option => option.text === stream.getVideoTracks()[0].label
             );
             videoElement.current.srcObject = stream;
-            socket.emit("broadcaster");
+            socket.emit(broadcaster);
         }
 
-        return streamWebCam();
+        streamWebCam();
     }
     return [onWebRTC, onWebRTC2, displayUserMedia];
 }
