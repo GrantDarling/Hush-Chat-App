@@ -6,6 +6,7 @@ import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/RoomLogic';
 import Socket from '../logical/Socket';
+import webRTC from '../logical/webRTC';
 
 
 const Room = ({ state, socket }) => {
@@ -30,7 +31,7 @@ const Room = ({ state, socket }) => {
     const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
     const [postMessage] = Socket();
 
-    // WEBRTC CODE !!!!!!!
+    // WEBRTC CONSTANTS !!!!!!!
         const videoElement = useRef();  
         const videoElement2 = useRef();    
         const video = useRef(); 
@@ -39,12 +40,14 @@ const Room = ({ state, socket }) => {
         const peerConnection2 = createRef();
 
 
+    // Send message, make use effect !!!!!!!
     useEffect(() => {
         socket.on('message', (guest, message, messageClass, audio) => {
             postMessage(guest, message, messageClass, audio)
         });
     }, []);
 
+        // WEBRTC CODE !!!!!!!
     useEffect(() => {
         if(isCreated) {
 
@@ -422,7 +425,7 @@ const Room = ({ state, socket }) => {
     return (
         <section className='Room'>
             <h3 className='Room-name'>Chatroom: {room.name}</h3>
-                    <section className="select">
+        <section className="select">
         <label htmlFor="audioSource">Audio source: </label>
         <select id="audioSource"></select>
         </section>
