@@ -1,15 +1,10 @@
-import { useEffect } from 'react';
 import Modal from './Modal';
 import JoinRoom from './ModalJoinRoom';
 import LobbyLogic from '../logical/Lobby';
 
 const Lobby = ({ socket }) => {
-  const [onClick, getRooms, lobby, setLobby, room, isOpen, toggleModal] = LobbyLogic();
+  const [onClick, lobby, room, isOpen, toggleModal] = LobbyLogic(socket);
 
-  useEffect(() => {
-    getRooms(socket);
-    return () => { setLobby({})}
-  }, [socket]);
 
   return (
     <section className='Lobby'>
