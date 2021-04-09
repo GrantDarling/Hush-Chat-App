@@ -1,12 +1,8 @@
 import React from 'react';
+import ModalCreateRoomLogic from '../logical/ModalCreateRoom';
 
 const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    toggleModal();
-    setRoom({ ...room, isCreated: true });
-  }
+  const [onSubmit] = ModalCreateRoomLogic(toggleModal, setRoom, room);
 
   return (
     <div className='modal-child'>

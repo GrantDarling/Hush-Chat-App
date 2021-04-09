@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
+import ModalJoinRoomLogic from '../logical/ModalJoinRoom';
 
 const ModalJoinRoom = ({ room, lobby }) => {
-  const [redirect, setRedirect] = useState(false);
-  const [other, setOther] = useState('');
-  const [allowOtherVideo, setAllowOtherVideo] = useState('');
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setRedirect(true);
-  };
-
-  const onChangeGuest = (e) => setOther(e.target.value);
-  const onChangeVideo = (e) => setAllowOtherVideo(e.target.value)
-
+  const [onSubmit, onChangeGuest, onChangeVideo, redirect, other, allowOtherVideo] = ModalJoinRoomLogic(room, lobby);
+  
   return (
     <div className='modal-child'>
       <h1>JOIN ROOM</h1>

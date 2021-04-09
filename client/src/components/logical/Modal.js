@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const ModalSwitch = () => {
+const Modal = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleModal = () => {
@@ -10,4 +10,4 @@ const ModalSwitch = () => {
     return [isOpen, toggleModal];
 }
 
-export default ModalSwitch;
+export default Modal;
