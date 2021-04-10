@@ -1,7 +1,8 @@
-import {useState, useRef, createRef } from 'react';
+import {useState, useRef, createRef, useCallback } from 'react';
 import Socket from './Socket';
 
-const RoomLogic = (socket) => {
+
+const RoomLogic = (socket, state, toggleModal) => {
     const [postMessage] = Socket();
     const [room, setRoom] = useState({
         name: '',
@@ -19,7 +20,7 @@ const RoomLogic = (socket) => {
         hasJoined: false,
         setURL: window.location.href,
     });
-    const { chatMessage } = room;
+    const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const videoElement = useRef(null);  
     const videoElement2 = useRef(null);    
     const video = useRef(); 
@@ -30,14 +31,6 @@ const RoomLogic = (socket) => {
     const config = {
         iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
     };   
-
-
-    const setLocalRoom = () => {
-        setRoom({ 
-            ...room, 
-            isCreated: false
-        });
-    };
 
     const setClientRooms = () => {
         socket.on('refresh clients', (state) => {
@@ -57,6 +50,42 @@ const RoomLogic = (socket) => {
             });
         });
     };
+
+
+    // Code cleanUp useEffect
+    const cleanUpCode = useCallback(() => {
+        let thisURL = window.location.href;
+        if (thisURL !== setURL && isHost) {
+            state.clickedNewRoom = 'true'
+            socket.emit('close room', room.name);
+            socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
+            return setRoom({})
+        }
+
+        if(thisURL !== setURL) {
+            socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
+            return setRoom({})
+        };
+    }, [socket, room, state, isHost, setURL, setRoom]);
+
+    // Clicked new room
+    const clickedNewRoom = useCallback(() => {
+        if (!!state.clickedNewRoom) {
+            toggleModal();
+            setClientRooms();
+
+            state.clickedNewRoom = '';
+        }    
+    }, [state.clickedNewRoom, toggleModal, setClientRooms, state]);
+
+
+    const setLocalRoom = () => {
+        setRoom({ 
+            ...room, 
+            isCreated: false
+        });
+    };
+
 
     const setJoinedRoom = (state) => {
         setRoom({ 
@@ -90,7 +119,7 @@ const RoomLogic = (socket) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config];
+    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config, cleanUpCode, clickedNewRoom];
 }
 
 export default RoomLogic;

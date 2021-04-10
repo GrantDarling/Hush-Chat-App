@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -9,28 +9,26 @@ import webRTC from '../logical/webRTC';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
 
-const Room = ({ state, socket }) => {
+const Room = ({ state, socket}) => {
     const [isOpen, toggleModal] = ModalSwitch();
     const [
         setLocalRoom, setClientRooms, setJoinedRoom, 
         onChange, sendMessage, 
         room, setRoom,
         videoElement, videoElement2,
-        video, switcher, video2, peerConnection, peerConnections, config
-    ] = RoomLogic(socket);
+        video, switcher, video2, peerConnection, peerConnections, config,
+        cleanUpCode, clickedNewRoom
+    ] = RoomLogic(socket, state, toggleModal);
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
     useOnSocket(socket);
 
+
+
     // Clicked New Room
     useEffect(() => {
-        if (!!state.clickedNewRoom) {
-            toggleModal();
-            setClientRooms();
-
-            state.clickedNewRoom = '';
-        }    
-    }, [state.clickedNewRoom, toggleModal, setClientRooms, state]);
+        clickedNewRoom();
+    }, [clickedNewRoom]);
 
     // Room Created
     useEffect(() => {
@@ -55,21 +53,6 @@ const Room = ({ state, socket }) => {
             socket.emit('refresh clients', state.name, state);
         }    
     }, [hasJoined, setJoinedRoom, socket, state]);
-
-    const cleanUpCode = useCallback(() => {
-        let thisURL = window.location.href;
-        if (thisURL !== setURL && isHost) {
-            state.clickedNewRoom = 'true'
-            socket.emit('close room', room.name);
-            socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
-            return setRoom({})
-        }
-
-        if(thisURL !== setURL) {
-            socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
-            return setRoom({})
-        };
-    }, [socket, room, state, isHost, setURL, setRoom]);
 
     // Clean up use effect
     useEffect(() => {
