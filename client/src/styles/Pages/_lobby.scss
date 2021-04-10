@@ -5,6 +5,7 @@
 .Lobby {
     @include flex-position(center, center);
     height: 100%;
+    width: 100%;
 }
 
 .chatrooms, .chatroom,
@@ -15,9 +16,11 @@
 .chatrooms {
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
 
     .chatroom {
-        min-width: 400px;
+        max-width: 400px;
+        width: 80%;
         min-height: 125px;
         box-shadow: $box-shadow;
         border-radius: $border-radius;
@@ -30,6 +33,7 @@
             flex-direction: column;
             line-height: 1.5;
             height: 125px;
+            width: 100%;
 
             h3 {
                 margin: 0;
@@ -58,7 +62,7 @@
             border-radius: $border-radius;   
             border: solid 1px #e3e3e3;
             padding: 10px;
-            height: 34px;
+            height: auto;
             background: $white;
             width: 100px;
             text-align: center;

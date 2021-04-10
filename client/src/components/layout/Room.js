@@ -11,12 +11,7 @@ const Room = ({ state, socket }) => {
     const { chatMessage } = room;
     useOnSocket(socket);
 
-    
-    useEffect(() => {
-        return function cleanup() {
-            cleanUpCode();     // Clean up and leave room
-        }
-    },[cleanUpCode])
+
 
     return (
         <section className='Room'>

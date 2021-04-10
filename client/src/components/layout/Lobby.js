@@ -20,7 +20,10 @@ const Lobby = ({ socket }) => {
                   : <div className='join'>FULL</div> 
                 }
               </div>
-              <button className='join' onClick={() => onClick(room)}>JOIN</button>
+                { room.users.length < 2 
+                  ? <button className='join' onClick={() => onClick(room)}>JOIN</button>
+                  : "" 
+                }
             </div>))
             :
             (<div className="chatrooms--none">

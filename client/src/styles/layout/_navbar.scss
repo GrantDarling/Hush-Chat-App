@@ -41,3 +41,14 @@
     }
   }
 }
+
+
+@media only screen and (max-width: 600px) {
+    .Navbar .links {
+      display: grid;
+
+      span {
+        display: none;
+      }
+    }
+}
