@@ -1,12 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
 
-function useSetNewRoom(socket, state, toggleModal, setRoom, room, onWebRTC, getUserVideo, peerConnection, video) {
+function useSetNewRoom(socket, state, toggleModal, setRoom, room) {
     const [hasRun, setHasRun] = useState(false);
 
     const setBroadcastRoomState = useCallback(() => {
         socket.on('broadcast room state', (state) => {
-            socket.emit("watcher");
-            onWebRTC(getUserVideo, peerConnection, video);
             setRoom({ 
                 ...room, 
                 name: state.name,
@@ -20,7 +18,7 @@ function useSetNewRoom(socket, state, toggleModal, setRoom, room, onWebRTC, getU
                 }
             });
         });
-    }, [setRoom, room, socket, onWebRTC, peerConnection, getUserVideo, video]);
+    }, [setRoom, room, socket]);
 
     useEffect(() => {
         if (!!state.clickedNewRoom && !hasRun) {

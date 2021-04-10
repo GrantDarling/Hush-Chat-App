@@ -1,18 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import RoomLogic from '../logical/Room';
-import useOnSocket from '../logical/hooks/useOnSocket';
 
 const Room = ({ state, socket }) => {
-    const [onChange, sendMessage, room, setRoom, getUserVideo, videoElement2, video, video2, cleanUpCode, isOpen, toggleModal] = RoomLogic(socket, state);
+    const [onChange, sendMessage, room, setRoom, isOpen, toggleModal] = RoomLogic(socket, state);
     const { chatMessage } = room;
-    useOnSocket(socket);
-
-
-
+    
     return (
         <section className='Room'>
             <h3 className='Room-name'>Chatroom: {room.name}</h3>
@@ -37,16 +33,12 @@ const Room = ({ state, socket }) => {
                 <div className='videos'>
                     <div className='host'>
                         <h4 className='username' >{!!room.host.name ? `@${room.host.name}` : '' }</h4>
-                        {!!room.host.allowVideo 
-                            ? <video ref={!state.hasJoined ? getUserVideo : videoElement2} id="localVideo" playsInline autoPlay muted></video> // &&<video ref={videoElement2} id="localVideo" playsInline autoPlay muted></video>  // <video id="localVideo" autoPlay playsInline controls={false}/> // <img src={HostPlaceholder}  alt="Host Placeholder" className='active-video' /> 
-                            : <img src={HostPlaceholder}  alt="Host Placeholder" className='' /> }
+                        <img src={HostPlaceholder}  alt="Host Placeholder" className='' />
 
                     </div>
                     <div className='guest'>
                         <h4 className='username' >{!!room.guest.name ? `@${room.guest.name}` : 'waiting for guest...'}</h4>
-                        {!!room.guest.allowVideo 
-                            ?  <video ref={!state.hasJoined ? video : video2} id="guestVideo" autoPlay playsInline controls={false}/>// <video  id="guestVideo" autoPlay playsInline controls={false}/> // <img src={GuestPlaceholder} alt="Guest Placeholder" className='active-video' />
-                            : <img src={GuestPlaceholder} alt="Guest Placeholder" className='' /> }
+                        <img src={GuestPlaceholder} alt="Guest Placeholder" className='' />
                     </div>
                 </div>
 

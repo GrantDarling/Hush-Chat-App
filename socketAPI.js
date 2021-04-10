@@ -11,6 +11,14 @@ module.exports = {
 
             // Messenger Sockets
             socket.on('disconnect', () => {
+                const roomsWithClientID = rooms.filter((room) => room.users.includes(clientID));
+                    roomsWithClientID.forEach(roomWithClientID => {
+                    const roomsOmitEmitted = rooms.filter((room) => room.name !== roomWithClientID.name);
+                    socket.to(roomWithClientID.name).emit('host left', roomWithClientID.name);
+                    console.log(roomsOmitEmitted);
+                    rooms = roomsOmitEmitted
+                });
+
                  return console.log(`${clientID} disconnected...`);
             });
 

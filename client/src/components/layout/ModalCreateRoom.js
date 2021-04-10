@@ -27,29 +27,6 @@ const ModalCreateRoom = ({ onChange, toggleModal, setRoom, room }) => {
           onChange={onChange} 
           required
         /> 
-        <label htmlFor='allowVideo'>Allow Video?</label> <br/>
-        <label htmlFor='allowVideo'>Allow</label>
-        <input 
-          type="radio" 
-          id="allowed" 
-          className="checkmark" 
-          name="host" 
-          target-child='allowVideo'
-          value="true" 
-          onChange={onChange} 
-          required
-        />
-        <label htmlFor='allowVideo'>Do Not Allow</label>
-        <input 
-          type="radio" 
-          id="not-allowed" 
-          className="checkmark" 
-          name="host" 
-          target-child='allowVideo'
-          value="" 
-          onChange={onChange} 
-          required
-        />
         <button type="submit" name='submit'>CREATE</button>
       </form> 
     </div>

@@ -16,6 +16,7 @@ function useCodeCleanup(socket, state, room, setRoom) {
         
             if(thisURL !== setURL) {
                 socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
+                socket.emit('leave all rooms');
                 return setRoom({})
             };
         }

@@ -1,6 +1,5 @@
-import {useState, useRef, createRef } from 'react';
+import {useState } from 'react';
 import Socket from './Socket';
-import webRTC from './webRTC';
 import ModalSwitch from './Modal';
 
 // Import useEffect Hooks
@@ -28,17 +27,6 @@ const RoomLogic = (socket, state) => {
         setURL: window.location.href,
     });
     const { isCreated, chatMessage } = room;
-    const getUserVideo = useRef(null);  
-    const videoElement2 = useRef(null);    
-    const video = useRef(); 
-    const video2 = useRef();  
-
-    const peerConnections = {};
-     const peerConnection = createRef();
-    const config = {
-        iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
-    };   
-    const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
 
     // General Functons 
     const onChange = (e) => {
@@ -57,13 +45,12 @@ const RoomLogic = (socket, state) => {
     };
 
     // useEffects 
-    useSetNewRoom(socket, state, toggleModal, setRoom, room, onWebRTC, getUserVideo, peerConnection, video);
-    useCreateRoom(socket, room, setRoom, isCreated, getUserVideo, video, displayUserMedia);
-    useJoinRoom(socket, state, room, setRoom, videoElement2, onWebRTC, peerConnection, video2, displayUserMedia);
+    useSetNewRoom(socket, state, toggleModal, setRoom, room);
+    useCreateRoom(socket, room, setRoom, isCreated);
+    useJoinRoom(socket, state, room, setRoom);
     useCodeCleanup(socket, state, room, setRoom);
 
-
-    return [onChange, sendMessage, room, setRoom, getUserVideo, videoElement2, video, video2, useCodeCleanup, isOpen, toggleModal];
+    return [onChange, sendMessage, room, setRoom, isOpen, toggleModal];
 }
 
 export default RoomLogic;

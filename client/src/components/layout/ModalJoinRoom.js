@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import ModalJoinRoomLogic from '../logical/ModalJoinRoom';
 
 const ModalJoinRoom = ({ room, lobby }) => {
-  const [onSubmit, onChangeGuest, onChangeVideo, redirect, other, allowOtherVideo] = ModalJoinRoomLogic(room, lobby);
+  const [onSubmit, onChangeGuest, redirect, other, allowOtherVideo] = ModalJoinRoomLogic(room, lobby);
   
   return (
     <div className='modal-child'>
@@ -18,29 +18,6 @@ const ModalJoinRoom = ({ room, lobby }) => {
           onChange={onChangeGuest} 
           required
            /> 
-
-        <label htmlFor='allowVideo'>Allow Video?</label> <br/>
-        <label htmlFor='allowVideo'>Allow</label>
-        <input 
-          type="radio" 
-          id="allowed" 
-          className="checkmark" 
-          name="allowGuestVideo" 
-          value="true" 
-          onChange={onChangeVideo} 
-          required
-        />
-
-        <label htmlFor='allowVideo'>Do Not Allow</label>
-        <input 
-          type="radio" 
-          id="not-allowed" 
-          className="checkmark" 
-          name="allowGuestVideo" 
-          value="" 
-          onChange={onChangeVideo} 
-          required
-        />
 
         <button type="submit" name='submit'>JOIN</button>
       </form> 
