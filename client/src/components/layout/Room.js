@@ -8,17 +8,17 @@ import RoomLogic from '../logical/Room';
 import webRTC from '../logical/webRTC';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
-const Room = ({ state, socket}) => {
+const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
     const [
-        setLocalRoom, setJoinedRoom, 
+        setJoinedRoom, 
         onChange, sendMessage, 
         room, setRoom,
         videoElement, videoElement2,
         video, switcher, video2, peerConnection, peerConnections, config,
-        cleanUpCode, clickedNewRoom
+        cleanUpCode, clickedNewRoom, roomWasCreated
     ] = RoomLogic(socket, state, toggleModal);
-    const { isCreated, hasJoined, chatMessage } = room;
+    const { hasJoined, chatMessage } = room;
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
     useOnSocket(socket);
 
@@ -28,18 +28,8 @@ const Room = ({ state, socket}) => {
 
     // Room Created
     useEffect(() => {
-        if(isCreated) {
-            if(switcher) {
-                onWebRTC(videoElement, peerConnection, video);
-                switcher.current = false;
-            }
-
-            displayUserMedia(socket, videoElement);
-            socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
-            socket.emit('join room', room.name);
-            setLocalRoom(setRoom, room);
-        }
-    }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom, videoElement, video]);
+        roomWasCreated();
+    }, [roomWasCreated]);
 
     // Guest Joined 
     useEffect(() => {

@@ -1,5 +1,7 @@
 import {useState, useRef, createRef, useCallback } from 'react';
 import Socket from './Socket';
+import webRTC from './webRTC';
+
 
 
 const RoomLogic = (socket, state, toggleModal) => {
@@ -20,7 +22,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         hasJoined: false,
         setURL: window.location.href,
     });
-    const { setURL, isHost, chatMessage } = room;
+    const { isCreated, setURL, isHost, chatMessage } = room;
     const videoElement = useRef(null);  
     const videoElement2 = useRef(null);    
     const video = useRef(); 
@@ -31,8 +33,9 @@ const RoomLogic = (socket, state, toggleModal) => {
     const config = {
         iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
     };   
+    const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
 
-    const setClientRooms = () => {
+    const setClientRooms = useCallback(() => {
         socket.on('refresh clients', (state) => {
             socket.emit("watcher");
 
@@ -49,7 +52,7 @@ const RoomLogic = (socket, state, toggleModal) => {
                 }
             });
         });
-    };
+    }, [setRoom, room, socket]);
 
 
     // Code cleanUp useEffect
@@ -68,6 +71,29 @@ const RoomLogic = (socket, state, toggleModal) => {
         };
     }, [socket, room, state, isHost, setURL, setRoom]);
 
+    const setLocalRoom = useCallback(() => {
+        setRoom({ 
+            ...room, 
+            isCreated: false
+        });
+    }, [setRoom, room]);
+
+
+    // roomWasCreated useEffect
+    const roomWasCreated = useCallback(() => {
+        if(isCreated) {
+            if(switcher) {
+                onWebRTC(videoElement, peerConnection, video);
+                switcher.current = false;
+            }
+
+            displayUserMedia(socket, videoElement);
+            socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
+            socket.emit('join room', room.name);
+            setLocalRoom(setRoom, room);
+        }
+    }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom, videoElement, video]);
+
     // Clicked new room
     const clickedNewRoom = useCallback(() => {
         if (!!state.clickedNewRoom) {
@@ -76,15 +102,7 @@ const RoomLogic = (socket, state, toggleModal) => {
 
             state.clickedNewRoom = '';
         }    
-    }, [toggleModal, setClientRooms, state]);
-
-
-    const setLocalRoom = () => {
-        setRoom({ 
-            ...room, 
-            isCreated: false
-        });
-    };
+    }, [toggleModal, state, setClientRooms]);
 
 
     const setJoinedRoom = (state) => {
@@ -119,7 +137,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setLocalRoom, setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config, cleanUpCode, clickedNewRoom];
+    return [setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config, cleanUpCode, clickedNewRoom, roomWasCreated];
 }
 
 export default RoomLogic;
