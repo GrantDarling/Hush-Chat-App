@@ -1,6 +1,6 @@
-const WebRTC = () => {
+const WebRTC = (socket, peerConnections, config) => {
     
-    const onWebRTC = (socket, videoElement, peerConnections, config, pc, video) => {
+    const onWebRTC = (videoElement, pc, video) => {
 
         socket.on("offer", (id, description, pc) => {
             pc.current = new RTCPeerConnection(config);
@@ -21,9 +21,13 @@ const WebRTC = () => {
             };
         });
 
-
         socket.on("answer", (id, description) => {
             peerConnections[id].setRemoteDescription(description)
+        });
+
+        socket.on("broadcaster", () => {
+            console.log('broadcaster fired!')
+            socket.emit("watcher");
         });
 
         socket.on("watcher", id => {

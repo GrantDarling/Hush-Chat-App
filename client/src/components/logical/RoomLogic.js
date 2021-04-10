@@ -32,9 +32,6 @@ const RoomLogic = (socket) => {
     const setClientRooms = () => {
         socket.on('refresh clients', (state) => {
             socket.emit("watcher");
-                    socket.on("broadcaster", () => {
-        socket.emit("watcher");
-        });
 
             setRoom({ 
                 ...room, 

@@ -10,7 +10,6 @@ import useOnSocket from '../logical/hooks/useOnSocket';
 
 
 const Room = ({ state, socket }) => {
-    const [onWebRTC, displayUserMedia] = webRTC();
     const [isOpen, toggleModal] = ModalSwitch();
     const [
         setLocalRoom, setClientRooms, setJoinedRoom, 
@@ -30,6 +29,8 @@ const Room = ({ state, socket }) => {
     const config = {
         iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
     };   
+    const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
+
     
     useOnSocket(socket);
 
@@ -45,7 +46,7 @@ const Room = ({ state, socket }) => {
     useEffect(() => {
         if(isCreated) {
             if(switcher) {
-                onWebRTC(socket, videoElement, peerConnections, config, peerConnection, video);
+                onWebRTC(videoElement, peerConnection, video);
                 switcher.current = false;
             }
 
@@ -94,10 +95,10 @@ const Room = ({ state, socket }) => {
             socket.emit("watcher");
             console.log('trying to connect...');
             if(switcher) {
-                onWebRTC(socket, videoElement2, peerConnections, config, peerConnection, video2);
+                displayUserMedia(socket, videoElement2);
+                onWebRTC(videoElement2, peerConnection, video2);
                 switcher.current = false;
             }
-            displayUserMedia(socket, videoElement2);
         }
 // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.hasJoined, video]) //, 
