@@ -5,21 +5,18 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/Room';
-import webRTC from '../logical/webRTC';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
 const Room = ({ state, socket }) => {
     const [isOpen, toggleModal] = ModalSwitch();
     const [
-        setJoinedRoom, 
         onChange, sendMessage, 
         room, setRoom,
         videoElement, videoElement2,
-        video, switcher, video2, peerConnection, peerConnections, config,
-        cleanUpCode, clickedNewRoom, roomWasCreated
+        video, video2,
+        cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc
     ] = RoomLogic(socket, state, toggleModal);
-    const { hasJoined, chatMessage } = room;
-    const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
+    const { chatMessage } = room;
     useOnSocket(socket);
 
     useEffect(() => {
@@ -33,25 +30,13 @@ const Room = ({ state, socket }) => {
 
     // Guest Joined 
     useEffect(() => {
-        if (!hasJoined && state.hasJoined) {
-            setJoinedRoom(state);
-            socket.emit('join room', state.name);
-            socket.emit('refresh clients', state.name, state);
-        }    
-    }, [hasJoined, setJoinedRoom, socket, state]);
+        userHasJoinedFunc();
+    }, [userHasJoinedFunc]);
 
     useEffect(() => {
-        if(state.hasJoined) {
-            socket.emit("watcher");
-            console.log('trying to connect...');
-            if(switcher) {
-                displayUserMedia(socket, videoElement2);
-                onWebRTC(videoElement2, peerConnection, video2);
-                switcher.current = false;
-            }
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.hasJoined, video]) //,
+        otherFunc();
+    }, [otherFunc]);
+
     
     useEffect(() => {
         return function cleanup() {

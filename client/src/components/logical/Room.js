@@ -2,8 +2,6 @@ import {useState, useRef, createRef, useCallback } from 'react';
 import Socket from './Socket';
 import webRTC from './webRTC';
 
-
-
 const RoomLogic = (socket, state, toggleModal) => {
     const [postMessage] = Socket();
     const [room, setRoom] = useState({
@@ -22,7 +20,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         hasJoined: false,
         setURL: window.location.href,
     });
-    const { isCreated, setURL, isHost, chatMessage } = room;
+    const { isCreated, setURL, isHost, chatMessage, hasJoined } = room;
     const videoElement = useRef(null);  
     const videoElement2 = useRef(null);    
     const video = useRef(); 
@@ -54,6 +52,23 @@ const RoomLogic = (socket, state, toggleModal) => {
         });
     }, [setRoom, room, socket]);
 
+    const setJoinedRoom = useCallback((state) => {
+        setRoom({ 
+            ...room, 
+            name: state.name,
+            host: {
+                name: state.other,
+                allowVideo: state.allowOtherVideo,
+            },
+            guest: {
+                name: state.host,
+                allowVideo: state.allowVideo,
+            },
+            isCreated: false,
+            isHost: false,
+            hasJoined: true
+        });
+    }, [setRoom, room]);
 
     // Code cleanUp useEffect
     const cleanUpCode = useCallback(() => {
@@ -77,7 +92,6 @@ const RoomLogic = (socket, state, toggleModal) => {
             isCreated: false
         });
     }, [setRoom, room]);
-
 
     // roomWasCreated useEffect
     const roomWasCreated = useCallback(() => {
@@ -103,25 +117,29 @@ const RoomLogic = (socket, state, toggleModal) => {
             state.clickedNewRoom = '';
         }    
     }, [toggleModal, state, setClientRooms]);
+    
+    const userHasJoinedFunc = useCallback(() => {
+        if (!hasJoined && state.hasJoined) {
+            setJoinedRoom(state);
+            socket.emit('join room', state.name);
+            socket.emit('refresh clients', state.name, state);
+        }    
+
+    }, [hasJoined, setJoinedRoom, socket, state]);
 
 
-    const setJoinedRoom = (state) => {
-        setRoom({ 
-            ...room, 
-            name: state.name,
-            host: {
-                name: state.other,
-                allowVideo: state.allowOtherVideo,
-            },
-            guest: {
-                name: state.host,
-                allowVideo: state.allowVideo,
-            },
-            isCreated: false,
-            isHost: false,
-            hasJoined: true
-        });
-    }
+    const otherFunc = useCallback(() => {
+        if(state.hasJoined) {
+            socket.emit("watcher");
+            console.log('trying to connect...');
+            if(switcher) {
+                displayUserMedia(socket, videoElement2);
+                onWebRTC(videoElement2, peerConnection, video2);
+                switcher.current = false;
+            }
+        }
+    },[state.hasJoined, video]);
+
 
     const onChange = (e) => {
         return (
@@ -137,7 +155,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config, cleanUpCode, clickedNewRoom, roomWasCreated];
+    return [onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, video2, cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc];
 }
 
 export default RoomLogic;
