@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -20,10 +20,9 @@ const Room = ({ state, socket }) => {
     ] = RoomLogic(socket);
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
-
-    
     useOnSocket(socket);
 
+    // Clicked New Room
     useEffect(() => {
         if (!!state.clickedNewRoom) {
             toggleModal();
@@ -33,6 +32,7 @@ const Room = ({ state, socket }) => {
         }    
     }, [state.clickedNewRoom, toggleModal, setClientRooms, state]);
 
+    // Room Created
     useEffect(() => {
         if(isCreated) {
             if(switcher) {
@@ -45,37 +45,39 @@ const Room = ({ state, socket }) => {
             socket.emit('join room', room.name);
             setLocalRoom(setRoom, room);
         }
-    }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom]);
+    }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom, videoElement, video]);
 
+    // Guest Joined 
     useEffect(() => {
-        // Local room created
-
-        // Guest has joined
         if (!hasJoined && state.hasJoined) {
             setJoinedRoom(state);
             socket.emit('join room', state.name);
             socket.emit('refresh clients', state.name, state);
+        }    
+    }, [hasJoined, setJoinedRoom, socket, state]);
 
+    const cleanUpCode = useCallback(() => {
+        let thisURL = window.location.href;
+        if (thisURL !== setURL && isHost) {
+            state.clickedNewRoom = 'true'
+            socket.emit('close room', room.name);
+            socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
+            return setRoom({})
         }
 
+        if(thisURL !== setURL) {
+            socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
+            return setRoom({})
+        };
+    }, [socket, room, state, isHost, setURL, setRoom]);
+
+    // Clean up use effect
+    useEffect(() => {
         // Clean up & close room
         return function cleanup() {
-            let thisURL = window.location.href;
-            if (thisURL !== setURL && isHost) {
-                state.clickedNewRoom = 'true'
-                socket.emit('close room', room.name);
-                socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
-                return setRoom({})
-            }
-
-            if(thisURL !== setURL) {
-                socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
-                return setRoom({})
-            };
-
+            cleanUpCode();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[socket, room, state, isCreated, isHost, hasJoined, setURL, toggleModal, setLocalRoom, setClientRooms, setJoinedRoom, peerConnection])
+    },[cleanUpCode])
 
 
     // !!! WEBRTC CODE !!!
