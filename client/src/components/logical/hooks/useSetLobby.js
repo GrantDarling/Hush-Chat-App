@@ -6,7 +6,9 @@ function useSetLobby(socket) {
     useEffect(() => {
         socket.on('get rooms', (rooms) => setLobby(rooms));
         socket.emit('get rooms'); 
-        return () => {}
+        return () => {
+          setLobby({});
+        }
     }, [socket]);
 
   return lobby;
