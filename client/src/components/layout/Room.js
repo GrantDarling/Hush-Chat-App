@@ -12,7 +12,11 @@ import useOnSocket from '../logical/hooks/useOnSocket';
 const Room = ({ state, socket }) => {
     const [onWebRTC, displayUserMedia] = webRTC();
     const [isOpen, toggleModal] = ModalSwitch();
-    const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom] = RoomLogic(socket);
+    const [
+        setLocalRoom, setClientRooms, setJoinedRoom, 
+        onChange, sendMessage, 
+        room, setRoom
+    ] = RoomLogic(socket);
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
 
 
@@ -27,30 +31,33 @@ const Room = ({ state, socket }) => {
         iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
     };   
     
-
     useOnSocket(socket);
 
     useEffect(() => {
-
-        // Initiate new room
         if (!!state.clickedNewRoom) {
-            state.clickedNewRoom = '';
             toggleModal();
-            setClientRooms(peerConnection, video2);
-        }
+            setClientRooms();
 
-        // Local room created
+            state.clickedNewRoom = '';
+        }    
+    }, [state.clickedNewRoom, toggleModal, setClientRooms, state]);
+
+    useEffect(() => {
         if(isCreated) {
             if(switcher) {
                 onWebRTC(socket, videoElement, peerConnections, config, peerConnection, video);
                 switcher.current = false;
             }
 
-            displayUserMedia(socket, videoElement, "broadcaster");
+            displayUserMedia(socket, videoElement);
             socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
             socket.emit('join room', room.name);
             setLocalRoom(setRoom, room);
         }
+    }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom]);
+
+    useEffect(() => {
+        // Local room created
 
         // Guest has joined
         if (!hasJoined && state.hasJoined) {
@@ -90,7 +97,7 @@ const Room = ({ state, socket }) => {
                 onWebRTC(socket, videoElement2, peerConnections, config, peerConnection, video2);
                 switcher.current = false;
             }
-            displayUserMedia(socket, videoElement2, "broadcaster");
+            displayUserMedia(socket, videoElement2);
         }
 // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.hasJoined, video]) //, 

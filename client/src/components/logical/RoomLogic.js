@@ -29,31 +29,12 @@ const RoomLogic = (socket) => {
         });
     };
 
-    const setClientRooms = (peerConnection2, video2) => {
+    const setClientRooms = () => {
         socket.on('refresh clients', (state) => {
             socket.emit("watcher");
-            console.log('trying to connect...');
-
-
-        socket.on("connect", () => {
+                    socket.on("broadcaster", () => {
         socket.emit("watcher");
         });
-
-        socket.on("broadcaster", () => {
-        socket.emit("watcher");
-        });
-
-        window.onunload = window.onbeforeunload = () => {
-        socket.close();
-        peerConnection2.current.close();
-        };
-
-        // function enableAudio() {
-        //     console.log("Enabling audio")
-        //     video2.current.muted = false;
-        // }
-
-
 
             setRoom({ 
                 ...room, 

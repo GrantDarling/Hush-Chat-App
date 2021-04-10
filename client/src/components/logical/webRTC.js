@@ -2,54 +2,6 @@ const WebRTC = () => {
     
     const onWebRTC = (socket, videoElement, peerConnections, config, pc, video) => {
 
-        socket.on("answer", (id, description) => {
-            peerConnections[id].setRemoteDescription(description)
-        });
-
-        socket.on("watcher", id => {
-            const peerConnection = new RTCPeerConnection(config);
-            peerConnections[id] = peerConnection;
-
-            let stream = videoElement.current.srcObject;
-            stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-
-            peerConnection.onicecandidate = event => {
-                if (event.candidate) {
-                socket.emit("candidate", id, event.candidate);
-                }
-            };
-
-            // Create offer, set local descrp. then emit offer
-            // async function makeCall() {
-            //     const offer = await peerConnection.createOffer();
-            //     await peerConnection.setLocalDescription(offer);
-            //     await socket.emit("offer", id, peerConnection.localDescription);
-            // }
-
-            peerConnection 
-                .createOffer()
-                .then(sdp => peerConnection.setLocalDescription(sdp))
-                .then(() => {
-                socket.emit("offer", id, peerConnection.localDescription, pc);
-                });
-
-        })
-
-
-
-        socket.on("candidate", (id, candidate) => {
-            peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
-        });
-
-        // socket.on("disconnectPeer", id => {
-        //     peerConnections[id].close();
-        //     delete peerConnections[id];
-        // });
-
-        // window.onunload = window.onbeforeunload = () => {
-        // socket.close();
-        // };
-
         socket.on("offer", (id, description, pc) => {
             pc.current = new RTCPeerConnection(config);
             pc.current
@@ -68,9 +20,40 @@ const WebRTC = () => {
                 }
             };
         });
+
+
+        socket.on("answer", (id, description) => {
+            peerConnections[id].setRemoteDescription(description)
+        });
+
+        socket.on("watcher", id => {
+            const peerConnection = new RTCPeerConnection(config);
+            peerConnections[id] = peerConnection;
+
+            let stream = videoElement.current.srcObject;
+            stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    socket.emit("candidate", id, event.candidate);
+                }
+            };
+
+            peerConnection 
+                .createOffer()
+                .then(sdp => peerConnection.setLocalDescription(sdp))
+                .then(() => {
+                socket.emit("offer", id, peerConnection.localDescription, pc);
+                });
+
+        })
+
+        socket.on("candidate", (id, candidate) => {
+            peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
+        });
     }
 
-    const displayUserMedia = (socket, videoElement, broadcaster) => {
+    const displayUserMedia = (socket, videoElement) => {
         // !!! Make me a useRef!
         const videoSelect = document.querySelector("select#videoSource");
 
@@ -129,9 +112,8 @@ const WebRTC = () => {
                 option => option.text === stream.getVideoTracks()[0].label
             );
             videoElement.current.srcObject = stream;
-            socket.emit(broadcaster);
+            socket.emit("broadcaster");
         }
-
         streamWebCam();
     }
     return [onWebRTC, displayUserMedia];
