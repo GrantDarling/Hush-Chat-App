@@ -3,19 +3,11 @@ import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
-import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/Room';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
 const Room = ({ state, socket }) => {
-    const [isOpen, toggleModal] = ModalSwitch();
-    const [
-        onChange, sendMessage, 
-        room, setRoom,
-        videoElement, videoElement2,
-        video, video2,
-        cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc
-    ] = RoomLogic(socket, state, toggleModal);
+    const [onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, video2, cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc, isOpen, toggleModal] = RoomLogic(socket, state);
     const { chatMessage } = room;
     useOnSocket(socket);
 

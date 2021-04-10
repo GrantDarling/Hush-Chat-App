@@ -1,8 +1,10 @@
 import {useState, useRef, createRef, useCallback } from 'react';
 import Socket from './Socket';
 import webRTC from './webRTC';
+import ModalSwitch from './Modal';
 
-const RoomLogic = (socket, state, toggleModal) => {
+const RoomLogic = (socket, state) => {
+    const [isOpen, toggleModal] = ModalSwitch();
     const [postMessage] = Socket();
     const [room, setRoom] = useState({
         name: '',
@@ -155,7 +157,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, video2, cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc];
+    return [onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, video2, cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc, isOpen, toggleModal];
 }
 
 export default RoomLogic;
