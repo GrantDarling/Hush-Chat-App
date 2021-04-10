@@ -9,8 +9,7 @@ function useOnSocket(socket) {
             postMessage(guest, message, messageClass, audio)
         });
 
-
-    }, [socket]);
+    }, [socket, postMessage]);
 }
 
 export default useOnSocket;

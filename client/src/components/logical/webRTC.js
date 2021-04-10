@@ -1,22 +1,21 @@
 const WebRTC = () => {
     
     const onWebRTC = (socket, videoElement, peerConnections, config, pc, video) => {
-        // Set up hook for 'useOnSocketEmit' 
+
         socket.on("answer", (id, description) => {
-                        console.log(peerConnections)
             peerConnections[id].setRemoteDescription(description)
         });
+
         socket.on("watcher", id => {
+            const peerConnection = new RTCPeerConnection(config);
+            peerConnections[id] = peerConnection;
 
-            const peerConnection = new RTCPeerConnection(config); // Create new connection
-            peerConnections[id] = peerConnection; // Assign specific id in object to peerConnection
+            let stream = videoElement.current.srcObject;
+            stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
-            let stream = videoElement.current.srcObject; // Assign stream from video element
-            stream.getTracks().forEach(track => peerConnection.addTrack(track, stream)); // Assign tracks 
-
-            peerConnection.onicecandidate = event => { // Event listener for ice candidate
+            peerConnection.onicecandidate = event => {
                 if (event.candidate) {
-                socket.emit("candidate", id, event.candidate); // Emit candidate when event fires
+                socket.emit("candidate", id, event.candidate);
                 }
             };
 
@@ -26,6 +25,7 @@ const WebRTC = () => {
             //     await peerConnection.setLocalDescription(offer);
             //     await socket.emit("offer", id, peerConnection.localDescription);
             // }
+
             peerConnection 
                 .createOffer()
                 .then(sdp => peerConnection.setLocalDescription(sdp))
@@ -50,92 +50,28 @@ const WebRTC = () => {
         // socket.close();
         // };
 
-                console.log('launched!');
         socket.on("offer", (id, description, pc) => {
-            
             pc.current = new RTCPeerConnection(config);
-            console.log(`PC #2 is: ${pc.current}`)
             pc.current
                 .setRemoteDescription(description)
                 .then(() => pc.current.createAnswer())
                 .then(sdp => pc.current.setLocalDescription(sdp))
                 .then(() => {
-                socket.emit("answer", id, pc.current.localDescription);
+                    socket.emit("answer", id, pc.current.localDescription);
                 });
             pc.current.ontrack = event => {
                 video.current.srcObject = event.streams[0];
             };
             pc.current.onicecandidate = event => {
                 if (event.candidate) {
-                socket.emit("candidate", id, event.candidate);
+                    socket.emit("candidate", id, event.candidate);
                 }
             };
         });
-
-        // socket.on("candidate", (id, candidate, pc) => {
-        //     pc.current
-        //         .addIceCandidate(new RTCIceCandidate(candidate))
-        //         .catch(e => console.error(e));
-        // });
-
-    }
-
-    const onWebRTC2 = (socket, videoElement2, peerConnections, config) => {
-        // // Create my own connection! *****
-
-
-        // Answer the call and set remote description
-        socket.on("answer2", (id, description) => {
-            peerConnections[id].setRemoteDescription(description);
-            console.log(`Peer connection on answer: ${peerConnections[id]} \n description param: ${description}`)
-        });
-        console.log('host peerConnections ' + peerConnections)
-
-        // On watcher...
-        socket.on("watcher2", id => {
-            console.log("watcher started!")
-        const peerConnection = new RTCPeerConnection(config); // Create new connection
-        peerConnections[id] = peerConnection; // Assign specific id in object to peerConnection
-
-        let stream = videoElement2.current.srcObject; // Assign stream from video element
-        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream)); // Assign tracks 
-
-        peerConnection.onicecandidate = event => { // Event listener for ice candidate
-            if (event.candidate) {
-            socket.emit("candidate2", id, event.candidate); // Emit candidate when event fires
-            }
-        };
-
-            console.log('let\'s connect baby!!')
-            // Create offer, set local descrp. then emit offer
-            peerConnection 
-                .createOffer()
-                .then(sdp => peerConnection.setLocalDescription(sdp))
-                .then(() => {
-                socket.emit("offer2", id, peerConnection.localDescription);
-                });
-
-        })
-
-
-
-        socket.on("candidate2", (id, candidate) => {
-            peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
-        });
-
-        // // socket.on("disconnectPeer", id => {
-        // //     peerConnections[id].close();
-        // //     delete peerConnections[id];
-        // // });
-
-        // window.onunload = window.onbeforeunload = () => {
-        // socket.close();
-        // };
-
     }
 
     const displayUserMedia = (socket, videoElement, broadcaster) => {
-                // Make me a useRef!
+        // !!! Make me a useRef!
         const videoSelect = document.querySelector("select#videoSource");
 
         videoSelect.onchange = getStream;
@@ -198,7 +134,7 @@ const WebRTC = () => {
 
         streamWebCam();
     }
-    return [onWebRTC, onWebRTC2, displayUserMedia];
+    return [onWebRTC, displayUserMedia];
 }
 
 export default WebRTC;

@@ -1,30 +1,38 @@
+import {useState} from 'react';
 import Socket from '../logical/Socket';
-import webRTC from '../logical/webRTC';
-// import useSound from 'use-sound';
-// import boop from '../../sounds/boop.mp3';
 
-const RoomLogic = (room, setRoom, socket, chatMessage) => {
+const RoomLogic = (socket) => {
     const [postMessage] = Socket();
-//     const [emitBoop] = useSound(
-//     boop,
-//     { volume: 0.25 }
-//   );
+    const [room, setRoom] = useState({
+        name: '',
+        host: {
+            name: '',
+            allowVideo: '',
+        },        
+        guest: {
+            name: '',
+            allowVideo: ''
+        },
+        chatMessage: '',
+        isCreated: false,
+        isHost: true,
+        hasJoined: false,
+        setURL: window.location.href,
+    });
+    const { chatMessage } = room;
 
-    const setLocalRoom = (setRoom, room) => {
+
+    const setLocalRoom = () => {
         setRoom({ 
             ...room, 
             isCreated: false
         });
     };
 
-    const setClientRooms = (setRoom, room, socket, peerConnection2, video2) => {
+    const setClientRooms = (peerConnection2, video2) => {
         socket.on('refresh clients', (state) => {
             socket.emit("watcher");
             console.log('trying to connect...');
-        
-        const config = {
-            iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
-        };
 
 
         socket.on("connect", () => {
@@ -40,10 +48,10 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
         peerConnection2.current.close();
         };
 
-        function enableAudio() {
-        console.log("Enabling audio")
-        video2.current.muted = false;
-        }
+        // function enableAudio() {
+        //     console.log("Enabling audio")
+        //     video2.current.muted = false;
+        // }
 
 
 
@@ -62,7 +70,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
         });
     };
 
-    const setJoinedRoom = (setRoom, room, state) => {
+    const setJoinedRoom = (state) => {
         setRoom({ 
             ...room, 
             name: state.name,
@@ -94,7 +102,7 @@ const RoomLogic = (room, setRoom, socket, chatMessage) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, webRTC];
+    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom];
 }
 
 export default RoomLogic;
