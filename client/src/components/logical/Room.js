@@ -20,7 +20,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         hasJoined: false,
         setURL: window.location.href,
     });
-    const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
+    const { setURL, isHost, chatMessage } = room;
     const videoElement = useRef(null);  
     const videoElement2 = useRef(null);    
     const video = useRef(); 
@@ -76,7 +76,7 @@ const RoomLogic = (socket, state, toggleModal) => {
 
             state.clickedNewRoom = '';
         }    
-    }, [state.clickedNewRoom, toggleModal, setClientRooms, state]);
+    }, [toggleModal, setClientRooms, state]);
 
 
     const setLocalRoom = () => {
@@ -119,7 +119,7 @@ const RoomLogic = (socket, state, toggleModal) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config, cleanUpCode, clickedNewRoom];
+    return [setLocalRoom, setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config, cleanUpCode, clickedNewRoom];
 }
 
 export default RoomLogic;

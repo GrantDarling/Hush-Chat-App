@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
@@ -8,26 +8,22 @@ import RoomLogic from '../logical/Room';
 import webRTC from '../logical/webRTC';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
-
 const Room = ({ state, socket}) => {
     const [isOpen, toggleModal] = ModalSwitch();
     const [
-        setLocalRoom, setClientRooms, setJoinedRoom, 
+        setLocalRoom, setJoinedRoom, 
         onChange, sendMessage, 
         room, setRoom,
         videoElement, videoElement2,
         video, switcher, video2, peerConnection, peerConnections, config,
         cleanUpCode, clickedNewRoom
     ] = RoomLogic(socket, state, toggleModal);
-    const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
+    const { isCreated, hasJoined, chatMessage } = room;
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
     useOnSocket(socket);
 
-
-
-    // Clicked New Room
     useEffect(() => {
-        clickedNewRoom();
+        clickedNewRoom(); // Clicked New Room
     }, [clickedNewRoom]);
 
     // Room Created
@@ -54,17 +50,6 @@ const Room = ({ state, socket}) => {
         }    
     }, [hasJoined, setJoinedRoom, socket, state]);
 
-    // Clean up use effect
-    useEffect(() => {
-        // Clean up & close room
-        return function cleanup() {
-            cleanUpCode();
-        }
-    },[cleanUpCode])
-
-
-    // !!! WEBRTC CODE !!!
-
     useEffect(() => {
         if(state.hasJoined) {
             socket.emit("watcher");
@@ -75,8 +60,14 @@ const Room = ({ state, socket}) => {
                 switcher.current = false;
             }
         }
-// eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.hasJoined, video]) //, 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.hasJoined, video]) //,
+    
+    useEffect(() => {
+        return function cleanup() {
+            cleanUpCode();     // Clean up and leave room
+        }
+    },[cleanUpCode])
 
     return (
         <section className='Room'>
