@@ -5,13 +5,12 @@ import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
 import RoomLogic from '../logical/RoomLogic';
-import Socket from '../logical/Socket';
 import webRTC from '../logical/webRTC';
+import useOnSocket from '../logical/hooks/useOnSocket';
 
 
 const Room = ({ state, socket }) => {
     const [onWebRTC, onWebRTC2, displayUserMedia] = webRTC();
-    console.log(displayUserMedia);
     const [isOpen, toggleModal] = ModalSwitch();
     const [room, setRoom] = useState({
         name: '',
@@ -31,37 +30,22 @@ const Room = ({ state, socket }) => {
     });
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
     const [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage] = RoomLogic(room, setRoom, socket, chatMessage);
-    const [postMessage] = Socket();
-
-    // WEBRTC CONSTANTS !!!!!!!
-        const videoElement = useRef();  
-        const videoElement2 = useRef();    
-        const video = useRef(); 
-        const video2 = useRef();  
-        const peerConnection = createRef();
-        const peerConnection2 = createRef();
 
 
-    // Send message, make use effect !!!!!!!
-    useEffect(() => {
-        socket.on('message', (guest, message, messageClass, audio) => {
-            postMessage(guest, message, messageClass, audio)
-        });
-    }, []);
+    const videoElement = useRef();  
+    const videoElement2 = useRef();    
+    const video = useRef(); 
+    const video2 = useRef();  
+    const peerConnection = createRef();
+    const peerConnection2 = createRef();
 
-        // WEBRTC CODE !!!!!!!
-    useEffect(() => {
-        if(isCreated) {
-
-    onWebRTC(socket, videoElement);
-    displayUserMedia(socket, videoElement, "broadcaster");
-}
-    }, [socket, videoElement, isCreated]);
-    // WEBRTC CODE !!!!!!!
+    useOnSocket(socket);
 
 
-
-    // Call WebRTC
+    const peerConnections = {};
+    const config = {
+        iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
+    };   
 
     useEffect(() => {
 
@@ -74,13 +58,11 @@ const Room = ({ state, socket }) => {
 
         // Local room created
         if(isCreated) {
+            onWebRTC(socket, videoElement, peerConnections, config);
+            displayUserMedia(socket, videoElement, "broadcaster");
             socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
             socket.emit('join room', room.name);
             setLocalRoom(setRoom, room);
-        }
-
-        if(peerConnection) {
-
         }
 
         // Guest has joined
@@ -147,25 +129,17 @@ const Room = ({ state, socket }) => {
             .catch(e => console.error(e));
         });
 
-        socket.on("connect", () => {
-        socket.emit("watcher");
-        });
-
-        socket.on("broadcaster", () => {
-        socket.emit("watcher");
-        });
-
         window.onunload = window.onbeforeunload = () => {
         socket.close();
         peerConnection.current.close();
         };
 
         function enableAudio() {
-        console.log("Enabling audio")
-        video.current.muted = false;
+            console.log("Enabling audio")
+            video.current.muted = false;
         }
 
-        onWebRTC2(socket, videoElement2);
+        onWebRTC2(socket, videoElement2, peerConnections, config);
         displayUserMedia(socket, videoElement2, "broadcaster2");
 
         }

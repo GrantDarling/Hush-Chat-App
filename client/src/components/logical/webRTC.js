@@ -1,15 +1,10 @@
 const WebRTC = () => {
     
-    const onWebRTC = (socket, videoElement) => {
-        const peerConnections = {};
-        const config = {
-            iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
-        };   
-
+    const onWebRTC = (socket, videoElement, peerConnections, config) => {
         // Set up hook for 'useOnSocketEmit' 
         socket.on("answer", (id, description) => {
+                        console.log(peerConnections)
             peerConnections[id].setRemoteDescription(description)
-            console.log(peerConnections)
         });
         socket.on("watcher", id => {
 
@@ -56,13 +51,8 @@ const WebRTC = () => {
         // };
     }
 
-    const onWebRTC2 = (socket, videoElement2) => {
+    const onWebRTC2 = (socket, videoElement2, peerConnections, config) => {
         // // Create my own connection! *****
-
-        const peerConnections = {};
-        const config = {
-            iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
-        };
 
 
         // Answer the call and set remote description
