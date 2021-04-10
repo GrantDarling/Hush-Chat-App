@@ -8,12 +8,12 @@ function useJoinRoom(socket, state, room, setRoom, videoElement2, onWebRTC, peer
             ...room, 
             name: state.name,
             host: {
-                name: state.other,
-                allowVideo: state.allowOtherVideo,
-            },
-            guest: {
                 name: state.host,
                 allowVideo: state.allowVideo,
+            },
+            guest: {
+                name: state.other,
+                allowVideo: state.allowOtherVideo,
             },
             isCreated: false,
             isHost: false,

@@ -1,4 +1,4 @@
-import {useState, useRef, createRef, useCallback } from 'react';
+import {useState, useRef, createRef } from 'react';
 import Socket from './Socket';
 import webRTC from './webRTC';
 import ModalSwitch from './Modal';
@@ -7,6 +7,7 @@ import ModalSwitch from './Modal';
 import useSetNewRoom from './hooks/useSetNewRoom';
 import useCreateRoom from './hooks/useCreateRoom';
 import useJoinRoom from './hooks/useJoinRoom';
+import useCodeCleanup from './hooks/useCodeCleanup';
 
 const RoomLogic = (socket, state) => {
     const [isOpen, toggleModal] = ModalSwitch();
@@ -26,7 +27,7 @@ const RoomLogic = (socket, state) => {
         isHost: true,
         setURL: window.location.href,
     });
-    const { isCreated, setURL, isHost, chatMessage } = room;
+    const { isCreated, chatMessage } = room;
     const getUserVideo = useRef(null);  
     const videoElement2 = useRef(null);    
     const video = useRef(); 
@@ -59,24 +60,10 @@ const RoomLogic = (socket, state) => {
     useSetNewRoom(socket, state, toggleModal, setRoom, room, onWebRTC, getUserVideo, peerConnection, video);
     useCreateRoom(socket, room, setRoom, isCreated, getUserVideo, video, displayUserMedia);
     useJoinRoom(socket, state, room, setRoom, videoElement2, onWebRTC, peerConnection, video2, displayUserMedia);
-    
-    const cleanUpCode = useCallback(() => {
-        let thisURL = window.location.href;
-        if (thisURL !== setURL && isHost) {
-            state.clickedNewRoom = 'true'
-            socket.emit('close room', room.name);
-            socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
-            return setRoom({})
-        }
-    
-        if(thisURL !== setURL) {
-            socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
-            return setRoom({})
-        };
-    }, [socket, room, state, isHost, setURL, setRoom]);
+    useCodeCleanup(socket, state, room, setRoom);
 
 
-    return [onChange, sendMessage, room, setRoom, getUserVideo, videoElement2, video, video2, cleanUpCode, isOpen, toggleModal];
+    return [onChange, sendMessage, room, setRoom, getUserVideo, videoElement2, video, video2, useCodeCleanup, isOpen, toggleModal];
 }
 
 export default RoomLogic;
