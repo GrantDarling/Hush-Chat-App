@@ -108,10 +108,10 @@ const RoomLogic = (socket, state) => {
     
     const roomWasCreated = useCallback(() => {
         if(isCreated) {
-            if(!hasRun) {
+          //  if(hasRun.current === false) {
                 onWebRTC(videoElement, peerConnection, video);
-                hasRun.current = true;
-            }
+               // hasRun.current = true;
+            //}
 
             displayUserMedia(socket, videoElement);
             socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
@@ -134,11 +134,11 @@ const RoomLogic = (socket, state) => {
         if(state.hasJoined) {
             socket.emit("watcher");
             console.log('trying to connect...');
-            if(hasRun === false) {
+            //if(hasRun.current === false) {
                 displayUserMedia(socket, videoElement2);
                 onWebRTC(videoElement2, peerConnection, video2);
-                hasRun.current = true;
-            }
+                //hasRun.current = true;
+            //}
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[state.hasJoined, video]);
