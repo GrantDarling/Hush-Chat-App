@@ -1,6 +1,6 @@
 const WebRTC = () => {
     
-    const onWebRTC = (socket, videoElement, peerConnections, config) => {
+    const onWebRTC = (socket, videoElement, peerConnections, config, pc, video) => {
         // Set up hook for 'useOnSocketEmit' 
         socket.on("answer", (id, description) => {
                         console.log(peerConnections)
@@ -30,7 +30,7 @@ const WebRTC = () => {
                 .createOffer()
                 .then(sdp => peerConnection.setLocalDescription(sdp))
                 .then(() => {
-                socket.emit("offer", id, peerConnection.localDescription);
+                socket.emit("offer", id, peerConnection.localDescription, pc);
                 });
 
         })
@@ -49,6 +49,35 @@ const WebRTC = () => {
         // window.onunload = window.onbeforeunload = () => {
         // socket.close();
         // };
+
+                console.log('launched!');
+        socket.on("offer", (id, description, pc) => {
+            
+            pc.current = new RTCPeerConnection(config);
+            console.log(`PC #2 is: ${pc.current}`)
+            pc.current
+                .setRemoteDescription(description)
+                .then(() => pc.current.createAnswer())
+                .then(sdp => pc.current.setLocalDescription(sdp))
+                .then(() => {
+                socket.emit("answer", id, pc.current.localDescription);
+                });
+            pc.current.ontrack = event => {
+                video.current.srcObject = event.streams[0];
+            };
+            pc.current.onicecandidate = event => {
+                if (event.candidate) {
+                socket.emit("candidate", id, event.candidate);
+                }
+            };
+        });
+
+        // socket.on("candidate", (id, candidate, pc) => {
+        //     pc.current
+        //         .addIceCandidate(new RTCIceCandidate(candidate))
+        //         .catch(e => console.error(e));
+        // });
+
     }
 
     const onWebRTC2 = (socket, videoElement2, peerConnections, config) => {

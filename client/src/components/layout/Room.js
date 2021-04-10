@@ -49,6 +49,11 @@ const Room = ({ state, socket }) => {
 
     useEffect(() => {
 
+
+    }, []);
+
+    useEffect(() => {
+
         // Initiate new room
         if (!!state.clickedNewRoom) {
             toggleModal();
@@ -58,7 +63,7 @@ const Room = ({ state, socket }) => {
 
         // Local room created
         if(isCreated) {
-            onWebRTC(socket, videoElement, peerConnections, config);
+            onWebRTC(socket, videoElement, peerConnections, config, peerConnection, video);
             displayUserMedia(socket, videoElement, "broadcaster");
             socket.emit('create room', room.name, room.host.name, room.host.allowVideo);
             socket.emit('join room', room.name);
@@ -99,48 +104,14 @@ const Room = ({ state, socket }) => {
         if(state.hasJoined) {
             socket.emit("watcher");
             console.log('trying to connect...');
+
         
         const config = {
             iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
         };
 
-        socket.on("offer", (id, description) => {
-        peerConnection.current = new RTCPeerConnection(config);
-        peerConnection.current
-            .setRemoteDescription(description)
-            .then(() => peerConnection.current.createAnswer())
-            .then(sdp => peerConnection.current.setLocalDescription(sdp))
-            .then(() => {
-            socket.emit("answer", id, peerConnection.current.localDescription);
-            });
-        peerConnection.current.ontrack = event => {
-            video.current.srcObject = event.streams[0];
-        };
-        peerConnection.current.onicecandidate = event => {
-            if (event.candidate) {
-            socket.emit("candidate", id, event.candidate);
-            }
-        };
-        });
-
-        socket.on("candidate", (id, candidate) => {
-        peerConnection.current
-            .addIceCandidate(new RTCIceCandidate(candidate))
-            .catch(e => console.error(e));
-        });
-
-        window.onunload = window.onbeforeunload = () => {
-        socket.close();
-        peerConnection.current.close();
-        };
-
-        function enableAudio() {
-            console.log("Enabling audio")
-            video.current.muted = false;
-        }
-
-        onWebRTC2(socket, videoElement2, peerConnections, config);
-        displayUserMedia(socket, videoElement2, "broadcaster2");
+        onWebRTC(socket, videoElement2, peerConnections, config, peerConnection2, video2);
+        displayUserMedia(socket, videoElement2, "broadcaster");
 
         }
     }, [state.hasJoined, video])
