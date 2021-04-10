@@ -26,7 +26,7 @@ const RoomLogic = (socket, state) => {
     const videoElement = useRef(null);  
     const videoElement2 = useRef(null);    
     const video = useRef(); 
-    const switcher = useRef(true);
+    const hasRun = useRef(false);
     const video2 = useRef();  
     const peerConnection = createRef();
     const peerConnections = {};
@@ -34,6 +34,7 @@ const RoomLogic = (socket, state) => {
         iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
     };   
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
+
 
     // General Functons 
     const onChange = (e) => {
@@ -98,19 +99,18 @@ const RoomLogic = (socket, state) => {
 
     // UseEffect Functions
     const clickedNewRoom = useCallback(() => {
-        if (!!state.clickedNewRoom) {
-            toggleModal();
+        if (!!state.clickedNewRoom && hasRun.current === false) {
+            toggleModal('open');
             setClientRooms();
-
-            state.clickedNewRoom = '';
+            hasRun.current = true;
         }    
     }, [toggleModal, state, setClientRooms]);
     
     const roomWasCreated = useCallback(() => {
         if(isCreated) {
-            if(switcher) {
+            if(!hasRun) {
                 onWebRTC(videoElement, peerConnection, video);
-                switcher.current = false;
+                hasRun.current = true;
             }
 
             displayUserMedia(socket, videoElement);
@@ -118,7 +118,7 @@ const RoomLogic = (socket, state) => {
             socket.emit('join room', room.name);
             setLocalRoom(setRoom, room);
         }
-    }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom, videoElement, video]);
+    }, [isCreated, hasRun, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom, videoElement, video]);
 
     const userHasJoinedFunc = useCallback(() => {
         if (!hasJoined && state.hasJoined) {
@@ -134,12 +134,13 @@ const RoomLogic = (socket, state) => {
         if(state.hasJoined) {
             socket.emit("watcher");
             console.log('trying to connect...');
-            if(switcher) {
+            if(hasRun === false) {
                 displayUserMedia(socket, videoElement2);
                 onWebRTC(videoElement2, peerConnection, video2);
-                switcher.current = false;
+                hasRun.current = true;
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[state.hasJoined, video]);
     
     const cleanUpCode = useCallback(() => {
