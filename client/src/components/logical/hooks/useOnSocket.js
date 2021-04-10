@@ -1,15 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Socket from '../Socket';
 
 function useOnSocket(socket) {
     const [postMessage] = Socket();
+    const [hasRun, setHasRun] = useState(false);
 
     useEffect(() => {
-        socket.on('message', (guest, message, messageClass, audio) => {
-            postMessage(guest, message, messageClass, audio)
-        });
+        if(!hasRun) {
+            socket.on('message', (guest, message, messageClass, audio) => {
+                postMessage(guest, message, messageClass, audio)
+            });
+            setHasRun(true);
+        }
 
-    }, [socket, postMessage]);
+    }, [socket, postMessage, hasRun]);
 }
 
 export default useOnSocket;

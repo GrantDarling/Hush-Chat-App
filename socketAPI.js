@@ -52,8 +52,8 @@ module.exports = {
                 }
             });
         
-            socket.on('refresh clients', (emittedRoom, guestState) => {
-            return socket.to(emittedRoom).emit('refresh clients', guestState)
+            socket.on('broadcast room state', (emittedRoom, guestState) => {
+            return socket.to(emittedRoom).emit('broadcast room state', guestState)
             });
 
             socket.on('message', (message, emittedRoom, sender, messageClass, audio) => {
@@ -66,15 +66,22 @@ module.exports = {
 
             socket.on('close room', (emittedRoom) => {
                 const roomsOmitEmitted = rooms.filter((room) => room.name !== emittedRoom);
-                socket.to(emittedRoom).emit('host left', clientID);
+                socket.to(emittedRoom).emit('host left', emittedRoom);
+                console.log(roomsOmitEmitted);
                 rooms = roomsOmitEmitted
             });
 
-            // WebRTC Sockets (revise)
-            socket.on('joinedz', () => {
-                socket.emit("joinedz");
-            });
+            socket.on('close all rooms by client id', () => {
+                const roomsWithClientID = rooms.filter((room) => room.users.includes(clientID));
+                roomsWithClientID.forEach(roomWithClientID => {
+                    const roomsOmitEmitted = rooms.filter((room) => room.name !== roomWithClientID.name);
+                    socket.to(roomWithClientID.name).emit('host left', roomWithClientID.name);
+                    console.log(roomsOmitEmitted);
+                    rooms = roomsOmitEmitted
+                });
+            })
 
+            // WebRTC Sockets
             socket.on("broadcaster", () => {
                 broadcaster = socket.id;
                 socket.broadcast.emit("broadcaster");
@@ -94,30 +101,6 @@ module.exports = {
             socket.on("disconnect", () => {
                 socket.to(broadcaster).emit("disconnectPeer", socket.id);
             });
-
-
-            // Duplicates
-                socket.on("broadcaster2", () => {
-                broadcaster = socket.id;
-                socket.broadcast.emit("broadcaster2");
-            });
-            socket.on("watcher2", () => {
-                socket.to(broadcaster).emit("watcher2", socket.id);
-            });
-            socket.on("offer2", (id, message) => {
-                socket.to(id).emit("offer2", socket.id, message);
-            });
-            socket.on("answer2", (id, message) => {
-                socket.to(id).emit("answer2", socket.id, message);
-            });
-            socket.on("candidate2", (id, message) => {
-                socket.to(id).emit("candidate2", socket.id, message);
-            });
-            socket.on("disconnect2", () => {
-                socket.to(broadcaster).emit("disconnectPeer2", socket.id);
-            });
-
-
         });
     },
 

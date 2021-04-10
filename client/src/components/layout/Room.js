@@ -7,27 +7,9 @@ import RoomLogic from '../logical/Room';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
 const Room = ({ state, socket }) => {
-    const [onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, video2, cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc, isOpen, toggleModal] = RoomLogic(socket, state);
+    const [onChange, sendMessage, room, setRoom, getUserVideo, videoElement2, video, video2, cleanUpCode, isOpen, toggleModal] = RoomLogic(socket, state);
     const { chatMessage } = room;
     useOnSocket(socket);
-
-    useEffect(() => {
-        clickedNewRoom(); // Clicked New Room
-    }, [clickedNewRoom]);
-
-    // Room Created
-    useEffect(() => {
-        roomWasCreated();
-    }, [roomWasCreated]);
-
-    // Guest Joined 
-    useEffect(() => {
-        userHasJoinedFunc();
-    }, [userHasJoinedFunc]);
-
-    useEffect(() => {
-        otherFunc();
-    }, [otherFunc]);
 
     
     useEffect(() => {
@@ -43,7 +25,6 @@ const Room = ({ state, socket }) => {
                 <select id="videoSource">
             </select>
         </section>
-
             <div className='chatbox'> 
                 <div className='chat'>
                     <div className='messages' id='chat'>
@@ -62,7 +43,7 @@ const Room = ({ state, socket }) => {
                     <div className='host'>
                         <h4 className='username' >{!!room.host.name ? `@${room.host.name}` : '' }</h4>
                         {!!room.host.allowVideo 
-                            ? <video ref={!state.hasJoined ? videoElement : videoElement2} id="localVideo" playsInline autoPlay muted></video> // &&<video ref={videoElement2} id="localVideo" playsInline autoPlay muted></video>  // <video id="localVideo" autoPlay playsInline controls={false}/> // <img src={HostPlaceholder}  alt="Host Placeholder" className='active-video' /> 
+                            ? <video ref={!state.hasJoined ? getUserVideo : videoElement2} id="localVideo" playsInline autoPlay muted></video> // &&<video ref={videoElement2} id="localVideo" playsInline autoPlay muted></video>  // <video id="localVideo" autoPlay playsInline controls={false}/> // <img src={HostPlaceholder}  alt="Host Placeholder" className='active-video' /> 
                             : <img src={HostPlaceholder}  alt="Host Placeholder" className='' /> }
 
                     </div>
