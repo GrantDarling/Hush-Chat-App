@@ -1,10 +1,10 @@
-import React, { useEffect, createRef, useRef } from 'react';
+import React, { useEffect } from 'react';
 import Modal from './Modal';
 import CreateRoom from './ModalCreateRoom';
 import HostPlaceholder from "../../images/user-placeholder1.png";
 import GuestPlaceholder from "../../images/user-placeholder2.png";
 import ModalSwitch from '../logical/Modal';
-import RoomLogic from '../logical/RoomLogic';
+import RoomLogic from '../logical/Room';
 import webRTC from '../logical/webRTC';
 import useOnSocket from '../logical/hooks/useOnSocket';
 
@@ -14,21 +14,11 @@ const Room = ({ state, socket }) => {
     const [
         setLocalRoom, setClientRooms, setJoinedRoom, 
         onChange, sendMessage, 
-        room, setRoom
+        room, setRoom,
+        videoElement, videoElement2,
+        video, switcher, video2, peerConnection, peerConnections, config
     ] = RoomLogic(socket);
     const { isCreated, setURL, isHost, hasJoined, chatMessage } = room;
-
-
-    const videoElement = useRef(null);  
-    const videoElement2 = useRef(null);    
-    const video = useRef(); 
-    const switcher = useRef(true);
-    const video2 = useRef();  
-    const peerConnection = createRef();
-    const peerConnections = {};
-    const config = {
-        iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
-    };   
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
 
     

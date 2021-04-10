@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import Socket from '../logical/Socket';
+import {useState, useRef, createRef } from 'react';
+import Socket from './Socket';
 
 const RoomLogic = (socket) => {
     const [postMessage] = Socket();
@@ -20,6 +20,16 @@ const RoomLogic = (socket) => {
         setURL: window.location.href,
     });
     const { chatMessage } = room;
+    const videoElement = useRef(null);  
+    const videoElement2 = useRef(null);    
+    const video = useRef(); 
+    const switcher = useRef(true);
+    const video2 = useRef();  
+    const peerConnection = createRef();
+    const peerConnections = {};
+    const config = {
+        iceServers: [{ "urls": "stun:stun.l.google.com:19302" }]
+    };   
 
 
     const setLocalRoom = () => {
@@ -80,7 +90,7 @@ const RoomLogic = (socket) => {
         socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
         setRoom({ ...room, chatMessage: '' });
     };
-    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom];
+    return [setLocalRoom, setClientRooms, setJoinedRoom, onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, switcher, video2, peerConnection, peerConnections, config];
 }
 
 export default RoomLogic;
