@@ -35,6 +35,23 @@ const RoomLogic = (socket, state) => {
     };   
     const [onWebRTC, displayUserMedia] = webRTC(socket, peerConnections, config);
 
+    // General Functons 
+    const onChange = (e) => {
+        return (
+            e.target.name === 'host' 
+            ? setRoom({ ...room, [e.target.name] : { ...room.host, [e.target.getAttribute("target-child")]: e.target.value }})
+            : setRoom({ ...room, [e.target.name]: e.target.value })
+        )
+    }
+
+    const sendMessage = (e) => {
+        e.preventDefault(); 
+        postMessage(room.host.name, chatMessage, `message-host`, false);
+        socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
+        setRoom({ ...room, chatMessage: '' });
+    };
+
+    // Set Room Functions 
     const setClientRooms = useCallback(() => {
         socket.on('refresh clients', (state) => {
             socket.emit("watcher");
@@ -72,22 +89,6 @@ const RoomLogic = (socket, state) => {
         });
     }, [setRoom, room]);
 
-    // Code cleanUp useEffect
-    const cleanUpCode = useCallback(() => {
-        let thisURL = window.location.href;
-        if (thisURL !== setURL && isHost) {
-            state.clickedNewRoom = 'true'
-            socket.emit('close room', room.name);
-            socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
-            return setRoom({})
-        }
-
-        if(thisURL !== setURL) {
-            socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
-            return setRoom({})
-        };
-    }, [socket, room, state, isHost, setURL, setRoom]);
-
     const setLocalRoom = useCallback(() => {
         setRoom({ 
             ...room, 
@@ -95,7 +96,16 @@ const RoomLogic = (socket, state) => {
         });
     }, [setRoom, room]);
 
-    // roomWasCreated useEffect
+    // UseEffect Functions
+    const clickedNewRoom = useCallback(() => {
+        if (!!state.clickedNewRoom) {
+            toggleModal();
+            setClientRooms();
+
+            state.clickedNewRoom = '';
+        }    
+    }, [toggleModal, state, setClientRooms]);
+    
     const roomWasCreated = useCallback(() => {
         if(isCreated) {
             if(switcher) {
@@ -110,16 +120,6 @@ const RoomLogic = (socket, state) => {
         }
     }, [isCreated, switcher, onWebRTC, socket, displayUserMedia, peerConnection, room, setLocalRoom, setRoom, videoElement, video]);
 
-    // Clicked new room
-    const clickedNewRoom = useCallback(() => {
-        if (!!state.clickedNewRoom) {
-            toggleModal();
-            setClientRooms();
-
-            state.clickedNewRoom = '';
-        }    
-    }, [toggleModal, state, setClientRooms]);
-    
     const userHasJoinedFunc = useCallback(() => {
         if (!hasJoined && state.hasJoined) {
             setJoinedRoom(state);
@@ -141,22 +141,23 @@ const RoomLogic = (socket, state) => {
             }
         }
     },[state.hasJoined, video]);
+    
+    const cleanUpCode = useCallback(() => {
+        let thisURL = window.location.href;
+        if (thisURL !== setURL && isHost) {
+            state.clickedNewRoom = 'true'
+            socket.emit('close room', room.name);
+            socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
+            return setRoom({})
+        }
+
+        if(thisURL !== setURL) {
+            socket.emit('message', `${room.host.name} left the chat.`, room.name, '', `message-general`, true);
+            return setRoom({})
+        };
+    }, [socket, room, state, isHost, setURL, setRoom]);
 
 
-    const onChange = (e) => {
-        return (
-            e.target.name === 'host' 
-            ? setRoom({ ...room, [e.target.name] : { ...room.host, [e.target.getAttribute("target-child")]: e.target.value }})
-            : setRoom({ ...room, [e.target.name]: e.target.value })
-        )
-    }
-
-    const sendMessage = (e) => {
-        e.preventDefault(); 
-        postMessage(room.host.name, chatMessage, `message-host`, false);
-        socket.emit('message', chatMessage, room.name, room.host.name, `message-guest`, true);
-        setRoom({ ...room, chatMessage: '' });
-    };
     return [onChange, sendMessage, room, setRoom, videoElement, videoElement2, video, video2, cleanUpCode, clickedNewRoom, roomWasCreated, userHasJoinedFunc, otherFunc, isOpen, toggleModal];
 }
 
