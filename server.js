@@ -2,12 +2,14 @@ const express = require('express');
 const { connectSocket } = require('./socketAPI');
 const app = express();
 const path = require('path');
+const cors = require('cors')
 const server = require('http').Server(app);
 const io = require("socket.io")(server, { 
   cors: { origin: 'https://desolate-scrubland-43942.herokuapp.com/', methods: ['GET', 'POST'] }
 });
 
 // Connect SocketIO
+app.use(cors());
 connectSocket(io);
 
 // Serve static assets in production 
