@@ -11,6 +11,10 @@ function useOnSocket(socket) {
                 postMessage(guest, message, messageClass, audio)
             });
             setHasRun(true);
+
+            socket.on("disconnect", () => {
+                socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
+            })
         }
 
     }, [socket, postMessage, hasRun]);
