@@ -10,7 +10,7 @@ import useCodeCleanup from './hooks/useCodeCleanup';
 
 const RoomLogic = (socket, state) => {
     const [isOpen, toggleModal] = ModalSwitch();
-    const [postMessage] = Socket();
+    const [postMessage] = Socket(socket, room, setRoom);
     const [room, setRoom] = useState({
         name: '',
         host: {

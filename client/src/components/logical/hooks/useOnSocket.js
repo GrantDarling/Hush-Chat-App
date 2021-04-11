@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Socket from '../Socket';
 
-function useOnSocket(socket) {
+function useOnSocket(socket, room, setRoom) {
     const [postMessage] = Socket();
     const [hasRun, setHasRun] = useState(false);
 
@@ -11,10 +11,6 @@ function useOnSocket(socket) {
                 postMessage(guest, message, messageClass, audio)
             });
             setHasRun(true);
-
-            socket.on("disconnect", () => {
-                socket.emit('message', `${room.host.name} left the chat. Room closed...`, room.name, '', `message-general`, true);
-            })
         }
 
     }, [socket, postMessage, hasRun]);
