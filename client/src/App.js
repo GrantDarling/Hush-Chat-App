@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.scss';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
@@ -10,10 +10,6 @@ const socket = io.connect('https://hush-chat-app.herokuapp.com/' || 'http://loca
 
 const App = () => {
   useOnSocket(socket);
-  
-  useEffect(() => {
-    console.log(socket);
-  })
 
   return (
     <Router>
