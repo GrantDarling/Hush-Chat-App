@@ -6,7 +6,7 @@ import Routes from './components/routes/Routes';
 import io from 'socket.io-client';
 import useOnSocket from './components/logical/hooks/useOnSocket';
 
-const socket = io.connect('hush-chat-app' || 'http://localhost:5000');
+const socket = io.connect('https://desolate-scrubland-43942.herokuapp.com/' || 'http://localhost:5000');
 
 const App = () => {
   useOnSocket(socket);
