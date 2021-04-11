@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.scss';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
@@ -10,6 +10,10 @@ const socket = io.connect('https://desolate-scrubland-43942.herokuapp.com/' || '
 
 const App = () => {
   useOnSocket(socket);
+  
+  useEffect(() => {
+    console.log(socket);
+  })
 
   return (
     <Router>
