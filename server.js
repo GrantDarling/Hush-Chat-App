@@ -4,7 +4,9 @@ const app = express();
 const path = require('path');
 const cors = require('cors')
 const server = require('http').Server(app);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, { 
+  cors: { origin: 'https://hush-chat-app.herokuapp.com/', methods: ['GET', 'POST'] }
+});
 
 // Connect SocketIO
 app.use(cors());
