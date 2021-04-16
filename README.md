@@ -4,6 +4,8 @@ This project was an initative to create a fully functional chat application util
 
 ## Demos
 Live: https://hush-chat-app.herokuapp.com/
+
+
 Video: https://www.loom.com/share/d4af13c48fc143d5a4cd7752adc7eac3
 
 
