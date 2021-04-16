@@ -96,7 +96,7 @@
     width: 70%;
 
     .messages {
-        height: 45vh;
+        height: 57vh;
         padding: 20px;
         overflow-y: scroll;
         margin-bottom: 50px;
@@ -188,13 +188,29 @@ select#videoSource {
         border-radius: 0;
     }
 
-    .chat .messages .message-host {
-        text-align: left;
+    .chat .messages {
+        .message-host {
+            text-align: left;
+        }
+
+        .message-guest {
+            text-align: right;
+        }
     }
 
     .container {
         padding: 0 25px;
         box-sizing: border-box;
         text-align: center;
+    }
+
+    .input-controller {
+        input {
+            width: 70%;
+        }
+
+        button {
+            width: 30%;
+        }
     }
 }
